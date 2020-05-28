@@ -38,6 +38,7 @@
 #include "ccsds.h"
 #include "osapi.h"
 #include "cfe_error.h"
+#include "cfe_msg.h"
 
 #include <string.h>
 
@@ -194,47 +195,8 @@ void CFE_SB_SetTotalMsgLength(CFE_SB_MsgPtr_t MsgPtr,uint16 TotalLength)
 CFE_TIME_SysTime_t CFE_SB_GetMsgTime(CFE_SB_MsgPtr_t MsgPtr)
 {
     CFE_TIME_SysTime_t TimeFromMsg;
-    uint32 LocalSecs32 = 0;
-    uint32 LocalSubs32 = 0;
 
-    #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
-    uint16 LocalSubs16;
-    #endif
-
-    CFE_SB_TlmHdr_t *TlmHdrPtr;
-
-    /* if msg type is a command or msg has no secondary hdr, time = 0 */
-    if ((CCSDS_RD_TYPE(MsgPtr->Hdr) != CCSDS_CMD) && (CCSDS_RD_SHDR(MsgPtr->Hdr) != 0)) {
-
-        /* copy time data to/from packets to eliminate alignment issues */
-        TlmHdrPtr = (CFE_SB_TlmHdr_t *)MsgPtr;
-
-        #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
-
-        memcpy(&LocalSecs32, &TlmHdrPtr->Tlm.Sec.Time[0], 4);
-        memcpy(&LocalSubs16, &TlmHdrPtr->Tlm.Sec.Time[4], 2);
-        /* convert packet data into CFE_TIME_SysTime_t format */
-        LocalSubs32 = ((uint32) LocalSubs16) << 16;
-
-        #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_SUBS)
-
-        memcpy(&LocalSecs32, &TlmHdrPtr->Tlm.Sec.Time[0], 4);
-        memcpy(&LocalSubs32, &TlmHdrPtr->Tlm.Sec.Time[4], 4);
-        /* no conversion necessary -- packet format = CFE_TIME_SysTime_t format */
-
-        #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_M_20)
-
-        memcpy(&LocalSecs32, &TlmHdrPtr->Tlm.Sec.Time[0], 4);
-        memcpy(&LocalSubs32, &TlmHdrPtr->Tlm.Sec.Time[4], 4);
-        /* convert packet data into CFE_TIME_SysTime_t format */
-        LocalSubs32 = CFE_TIME_Micro2SubSecs((LocalSubs32 >> 12));
-
-        #endif
-    }
-
-    /* return the packet time converted to CFE_TIME_SysTime_t format */
-    TimeFromMsg.Seconds    = LocalSecs32;
-    TimeFromMsg.Subseconds = LocalSubs32;
+    CFE_MSG_GetMsgTime(&TimeFromMsg, MsgPtr);
 
     return TimeFromMsg;
 
@@ -246,50 +208,8 @@ CFE_TIME_SysTime_t CFE_SB_GetMsgTime(CFE_SB_MsgPtr_t MsgPtr)
  */
 int32 CFE_SB_SetMsgTime(CFE_SB_MsgPtr_t MsgPtr, CFE_TIME_SysTime_t NewTime)
 {
-    int32 Result = CFE_SB_WRONG_MSG_TYPE;
 
-    CFE_SB_TlmHdr_t *TlmHdrPtr;
-
-    /* declare format specific vars */
-    #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
-    uint16 LocalSubs16;
-    #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_M_20)
-    uint32 LocalSubs32;
-    #endif
-
-    /* cannot set time if msg type is a command or msg has no secondary hdr */
-    if ((CCSDS_RD_TYPE(MsgPtr->Hdr) != CCSDS_CMD) && (CCSDS_RD_SHDR(MsgPtr->Hdr) != 0)) {
-
-        /* copy time data to/from packets to eliminate alignment issues */
-        TlmHdrPtr = (CFE_SB_TlmHdr_t *) MsgPtr;
-
-        #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
-
-        /* convert time from CFE_TIME_SysTime_t format to packet format */
-        LocalSubs16 = (uint16) (NewTime.Subseconds >> 16);
-        memcpy(&TlmHdrPtr->Tlm.Sec.Time[0], &NewTime.Seconds, 4);
-        memcpy(&TlmHdrPtr->Tlm.Sec.Time[4], &LocalSubs16, 2);
-        Result = CFE_SUCCESS;
-
-        #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_SUBS)
-
-        /* no conversion necessary -- packet format = CFE_TIME_SysTime_t format */
-        memcpy(&TlmHdrPtr->Tlm.Sec.Time[0], &NewTime.Seconds, 4);
-        memcpy(&TlmHdrPtr->Tlm.Sec.Time[4], &NewTime.Subseconds, 4);
-        Result = CFE_SUCCESS;
-
-        #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_M_20)
-
-        /* convert time from CFE_TIME_SysTime_t format to packet format */
-        LocalSubs32 = CFE_TIME_Sub2MicroSecs(NewTime.Subseconds) << 12;
-        memcpy(&TlmHdrPtr->Tlm.Sec.Time[0], &NewTime.Seconds, 4);
-        memcpy(&TlmHdrPtr->Tlm.Sec.Time[4], &LocalSubs32, 4);
-        Result = CFE_SUCCESS;
-
-        #endif
-    }
-
-    return Result;
+    return CFE_MSG_SetMsgTime(MsgPtr, NewTime);
 
 }/* end CFE_SB_SetMsgTime */
 
@@ -309,17 +229,9 @@ void CFE_SB_TimeStampMsg(CFE_SB_MsgPtr_t MsgPtr)
  */
 uint16 CFE_SB_GetCmdCode(CFE_SB_MsgPtr_t MsgPtr)
 {
-    CFE_SB_CmdHdr_t     *CmdHdrPtr;
 
-    /* if msg type is telemetry or there is no secondary hdr, return 0 */
-    if((CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_TLM)||(CCSDS_RD_SHDR(MsgPtr->Hdr) == 0)){
-        return 0;
-    }/* end if */
+    return CFE_MSG_GetCmdCode(MsgPtr);
 
-    /* Cast the input pointer to a Cmd Msg pointer */
-    CmdHdrPtr = (CFE_SB_CmdHdr_t *)MsgPtr;
-
-    return CCSDS_RD_FC(CmdHdrPtr->Cmd.Sec);
 }/* end CFE_SB_GetCmdCode */
 
 
@@ -329,19 +241,8 @@ uint16 CFE_SB_GetCmdCode(CFE_SB_MsgPtr_t MsgPtr)
 int32 CFE_SB_SetCmdCode(CFE_SB_MsgPtr_t MsgPtr,
                       uint16 CmdCode)
 {
-    CFE_SB_CmdHdr_t     *CmdHdrPtr;
 
-    /* if msg type is telemetry or there is no secondary hdr... */
-    if((CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_TLM)||(CCSDS_RD_SHDR(MsgPtr->Hdr) == 0)){
-        return CFE_SB_WRONG_MSG_TYPE;
-    }/* end if */
-
-    /* Cast the input pointer to a Cmd Msg pointer */
-    CmdHdrPtr = (CFE_SB_CmdHdr_t *)MsgPtr;
-
-    CCSDS_WR_FC(CmdHdrPtr->Cmd.Sec,CmdCode);
-
-    return CFE_SUCCESS;
+    return CFE_MSG_SetCmdCode(MsgPtr, CmdCode);
 
 }/* end CFE_SB_SetCmdCode */
 
@@ -352,17 +253,7 @@ int32 CFE_SB_SetCmdCode(CFE_SB_MsgPtr_t MsgPtr,
 uint16 CFE_SB_GetChecksum(CFE_SB_MsgPtr_t MsgPtr)
 {
 
-    CFE_SB_CmdHdr_t     *CmdHdrPtr;
-
-    /* if msg type is telemetry or there is no secondary hdr... */
-    if((CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_TLM)||(CCSDS_RD_SHDR(MsgPtr->Hdr) == 0)){
-        return 0;
-    }/* end if */
-
-    /* cast the input pointer to a Cmd Msg pointer */
-    CmdHdrPtr = (CFE_SB_CmdHdr_t *)MsgPtr;
-
-    return CCSDS_RD_CHECKSUM(CmdHdrPtr->Cmd.Sec);
+    return CFE_MSG_GetChecksum(MsgPtr);
 
 }/* end CFE_SB_GetChecksum */
 
@@ -373,16 +264,7 @@ uint16 CFE_SB_GetChecksum(CFE_SB_MsgPtr_t MsgPtr)
 void CFE_SB_GenerateChecksum(CFE_SB_MsgPtr_t MsgPtr)
 {
 
-    CCSDS_CommandPacket_t    *CmdPktPtr;
-
-    /* if msg type is telemetry or there is no secondary hdr... */
-    if((CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_TLM)||(CCSDS_RD_SHDR(MsgPtr->Hdr) == 0)){
-        return;
-    }/* end if */
-
-    CmdPktPtr = (CCSDS_CommandPacket_t *)MsgPtr;
-
-    CCSDS_LoadCheckSum(CmdPktPtr);
+    CFE_MSG_GenerateChecksum(MsgPtr);
 
 }/* end CFE_SB_GenerateChecksum */
 
@@ -393,16 +275,7 @@ void CFE_SB_GenerateChecksum(CFE_SB_MsgPtr_t MsgPtr)
 bool CFE_SB_ValidateChecksum(CFE_SB_MsgPtr_t MsgPtr)
 {
 
-    CCSDS_CommandPacket_t    *CmdPktPtr;
-
-    /* if msg type is telemetry or there is no secondary hdr... */
-    if((CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_TLM)||(CCSDS_RD_SHDR(MsgPtr->Hdr) == 0)){
-        return false;
-    }/* end if */
-
-    CmdPktPtr = (CCSDS_CommandPacket_t *)MsgPtr;
-
-    return CCSDS_ValidCheckSum (CmdPktPtr);
+    return CFE_MSG_ValidateChecksum(MsgPtr);
 
 }/* end CFE_SB_ValidateChecksum */
 
