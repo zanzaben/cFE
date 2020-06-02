@@ -14,9 +14,13 @@
 ##################################################################
 
 # Add the basic set of files which are always built
-set(CFE_ALL_MODULE_SRCS ${CFE_ALL_MODULE_SRCS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/cfe_msg_checksum.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/cfe_msg_fc.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/cfe_msg_time.c
-    PARENT_SCOPE
+set(MODULE_SRCS
+    src/cfe_msg_checksum.c
+    src/cfe_msg_fc.c
+    src/cfe_msg_time.c
 )
+
+add_library(${MODULE_NAME} STATIC ${MODULE_SRCS})
+
+# Add to includes for header dependency resolution across modules
+target_include_directories(${MODULE_NAME} PUBLIC inc)

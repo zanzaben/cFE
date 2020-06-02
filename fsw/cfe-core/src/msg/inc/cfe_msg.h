@@ -105,7 +105,7 @@ void CFE_MSG_GenerateChecksum(CFE_SB_MsgPtr_t MsgPtr);
 bool CFE_MSG_ValidateChecksum(CFE_SB_MsgPtr_t MsgPtr);
 /**@}*/
 
-/** @defgropu CFEAPIMSGCmdCode cFE Message Command Code APIs
+/** @defgroup CFEAPIMSGCmdCode cFE Message Command Code APIs
  * @{
  */
 
@@ -158,7 +158,7 @@ uint16 CFE_MSG_GetCmdCode(CFE_SB_MsgPtr_t MsgPtr);
 
 /**@}*/
 
-/** @defgropu CFEAPIMSGTime cFE Message Time APIs
+/** @defgroup CFEAPIMSGTime cFE Message Time APIs
  * @{
  */
 
