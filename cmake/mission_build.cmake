@@ -40,11 +40,6 @@ function(initialize_globals)
       set(MISSION_SOURCE_DIR ${MISSION_SOURCE_DIR} CACHE PATH "Top level mission source directory")
     endif(NOT DEFINED MISSION_SOURCE_DIR)
 
-    # Default core modules, set early so it can be appended or replaced from user configuration
-    if (NOT DEFINED MISSION_CORE_MODULES)
-      set(MISSION_CORE_MODULES msg CACHE PATH "Mission core modules")
-    endif (NOT DEFINED MISSION_CORE_MODULES)
-
     # The configuration should be in a subdirectory named "<mission>_defs".  If there is one
     # and only one of these, this is assumed to be it.  If there is more than one then the
     # user MUST specify which one is intended to be used by setting MISSIONCONFIG in the environment
@@ -253,7 +248,6 @@ function(prepare)
     "MISSION_APPS" 
     "MISSION_PSPMODULES" 
     "MISSION_DEPS"
-    "MISSION_CORE_MODULES"
     "ENABLE_UNIT_TESTS"
   )
   foreach(APP ${MISSION_DEPS})
