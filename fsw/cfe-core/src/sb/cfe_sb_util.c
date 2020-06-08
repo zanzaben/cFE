@@ -38,7 +38,7 @@
 #include "ccsds.h"
 #include "osapi.h"
 #include "cfe_error.h"
-#include "cfe_msg.h"
+#include "cfe_msg_api.h"
 
 #include <string.h>
 
@@ -50,39 +50,13 @@ void CFE_SB_InitMsg(void           *MsgPtr,
                     uint16         Length,
                     bool        Clear )
 {
-   uint16           SeqCount;
-   CCSDS_PriHdr_t  *PktPtr;
 
-   PktPtr = (CCSDS_PriHdr_t *) MsgPtr;
-
-  /* Save the sequence count in case it must be preserved. */
-   SeqCount = CCSDS_RD_SEQ(*PktPtr);
-
-   /* Zero the entire packet if needed. */
-   if (Clear)  
-     { memset(MsgPtr, 0, Length); }
-     else    /* Clear only the primary header. */
-      {
-        CCSDS_CLR_PRI_HDR(*PktPtr);
-      }
-
-   /* Set the length fields in the primary header. */
-  CCSDS_WR_LEN(*PktPtr, Length);
-  
-  /* Always set the secondary header flag as CFS applications are required use it */
-  CCSDS_WR_SHDR(*PktPtr, 1);
-
-  CFE_SB_SetMsgId(MsgPtr, MsgId);
-  
-  /* Restore the sequence count if needed. */
-   if (!Clear)  
-      CCSDS_WR_SEQ(*PktPtr, SeqCount);
-   else
-      CCSDS_WR_SEQFLG(*PktPtr, CCSDS_INIT_SEQFLG);
+   CFE_MSG_Init((CFE_MSG_Message_t *)MsgPtr, MsgId, Length, Clear);
 
 } /* end CFE_SB_InitMsg */
 
-
+/* TODO deprecate */
+#if 0
 /******************************************************************************
 **  Function:  CFE_SB_MsgHdrSize()
 **
@@ -165,7 +139,7 @@ void CFE_SB_SetUserDataLength(CFE_SB_MsgPtr_t MsgPtr, uint16 DataLength)
     CCSDS_WR_LEN(MsgPtr->Hdr,TotalMsgSize);
 
 }/* end CFE_SB_SetUserDataLength */
-
+#endif
 
 /*
  * Function: CFE_SB_GetTotalMsgLength - See API and header file for details
@@ -173,7 +147,13 @@ void CFE_SB_SetUserDataLength(CFE_SB_MsgPtr_t MsgPtr, uint16 DataLength)
 uint16 CFE_SB_GetTotalMsgLength(const CFE_SB_Msg_t *MsgPtr)
 {
 
-    return CCSDS_RD_LEN(MsgPtr->Hdr);
+    CFE_MSG_Size_t size;
+
+    /* Doesn't check return, TODO deprecate self */
+    CFE_MSG_GetSize(MsgPtr, &size);
+
+    /* Known bug that this API can't return maximum ccsds size */
+    return (uint16)size;
 
 }/* end CFE_SB_GetTotalMsgLength */
 
@@ -184,7 +164,8 @@ uint16 CFE_SB_GetTotalMsgLength(const CFE_SB_Msg_t *MsgPtr)
 void CFE_SB_SetTotalMsgLength(CFE_SB_MsgPtr_t MsgPtr,uint16 TotalLength)
 {
 
-    CCSDS_WR_LEN(MsgPtr->Hdr,TotalLength);
+    /* Doesn't check return, TODO deprecate self */
+    CFE_MSG_SetSize(MsgPtr, TotalLength);
 
 }/* end CFE_SB_SetTotalMsgLength */
 
@@ -196,7 +177,7 @@ CFE_TIME_SysTime_t CFE_SB_GetMsgTime(CFE_SB_MsgPtr_t MsgPtr)
 {
     CFE_TIME_SysTime_t TimeFromMsg;
 
-    CFE_MSG_GetMsgTime(&TimeFromMsg, MsgPtr);
+    CFE_MSG_GetMsgTime(MsgPtr, &TimeFromMsg);
 
     return TimeFromMsg;
 
@@ -230,7 +211,11 @@ void CFE_SB_TimeStampMsg(CFE_SB_MsgPtr_t MsgPtr)
 uint16 CFE_SB_GetCmdCode(CFE_SB_MsgPtr_t MsgPtr)
 {
 
-    return CFE_MSG_GetCmdCode(MsgPtr);
+    CFE_MSG_FcnCode_t fc;
+
+    CFE_MSG_GetFcnCode(MsgPtr, &fc);
+
+    return fc;
 
 }/* end CFE_SB_GetCmdCode */
 
@@ -242,21 +227,32 @@ int32 CFE_SB_SetCmdCode(CFE_SB_MsgPtr_t MsgPtr,
                       uint16 CmdCode)
 {
 
-    return CFE_MSG_SetCmdCode(MsgPtr, CmdCode);
+    return CFE_MSG_SetFcnCode(MsgPtr, CmdCode);
 
 }/* end CFE_SB_SetCmdCode */
 
-
+/* TODO remove */
+#if 0
 /*
  * Function: CFE_SB_GetChecksum - See API and header file for details
  */
 uint16 CFE_SB_GetChecksum(CFE_SB_MsgPtr_t MsgPtr)
 {
 
-    return CFE_MSG_GetChecksum(MsgPtr);
+    CFE_SB_CmdHdr_t     *CmdHdrPtr;
+
+    /* if msg type is telemetry or there is no secondary hdr... */
+    if((CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_TLM)||(CCSDS_RD_SHDR(MsgPtr->Hdr) == 0)){
+        return 0;
+    }/* end if */
+
+    /* cast the input pointer to a Cmd Msg pointer */
+    CmdHdrPtr = (CFE_SB_CmdHdr_t *)MsgPtr;
+
+    return CCSDS_RD_CHECKSUM(CmdHdrPtr->Cmd.Sec);
 
 }/* end CFE_SB_GetChecksum */
-
+#endif
 
 /*
  * Function: CFE_SB_GenerateChecksum - See API and header file for details
@@ -274,8 +270,11 @@ void CFE_SB_GenerateChecksum(CFE_SB_MsgPtr_t MsgPtr)
  */
 bool CFE_SB_ValidateChecksum(CFE_SB_MsgPtr_t MsgPtr)
 {
+    bool isvalid;
 
-    return CFE_MSG_ValidateChecksum(MsgPtr);
+    CFE_MSG_ValidateChecksum(MsgPtr, &isvalid);
+
+    return isvalid;
 
 }/* end CFE_SB_ValidateChecksum */
 

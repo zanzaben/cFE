@@ -15,12 +15,29 @@
 
 # Add the basic set of files which are always built
 set(MODULE_SRCS
-    src/cfe_msg_checksum.c
-    src/cfe_msg_fc.c
-    src/cfe_msg_time.c
+    src/cfe_msg_ccsdspri.c
+    src/cfe_msg_init.c
+    src/cfe_msg_msgid_shared.c
+    src/cfe_msg_msgid_v1.c
+    src/cfe_msg_sechdr_checksum.c
+    src/cfe_msg_sechdr_fc.c
+    src/cfe_msg_sechdr_time.c
 )
+
+# Source selection for if CCSDS extended header is included
+if (MISSION_INCLUDE_CCSDSEXT_HEADER)
+    list(APPEND MODULE_SRCS
+        src/cfe_msg_ccsdsext.c
+        src/cfe_msg_initdefaulthdr_v2.c
+)
+else (MISSION_INCLUDE_CCSDSEXT_HEADER)
+    list(APPEND MODULE_SRCS
+        src/cfe_msg_initdefaulthdr_v1.c
+)
+endif (MISSION_INCLUDE_CCSDSEXT_HEADER)
 
 add_library(${MODULE_NAME} STATIC ${MODULE_SRCS})
 
 # Add to includes for header dependency resolution across modules
-target_include_directories(${MODULE_NAME} PUBLIC inc)
+target_include_directories(${MODULE_NAME} PUBLIC inc_public)
+target_include_directories(${MODULE_NAME} PRIVATE inc_private)

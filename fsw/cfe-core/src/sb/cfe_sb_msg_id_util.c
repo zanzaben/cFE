@@ -91,6 +91,7 @@
 #include "cfe_error.h"
 #include "cfe_sb_priv.h"
 #include "cfe_sb_msg_id_util.h"
+#include "cfe_msg_api.h"
 
 
 /******************************************************************************
@@ -117,59 +118,43 @@ CFE_SB_MsgKey_t CFE_SB_ConvertMsgIdtoMsgKey( CFE_SB_MsgId_t MsgId)
 
 /*
  * Function: CFE_SB_GetMsgId - See API and header file for details
+ * TODO deprecate
  */
 CFE_SB_MsgId_t CFE_SB_GetMsgId(const CFE_SB_Msg_t *MsgPtr)
 {
-   CFE_SB_MsgId_Atom_t MsgIdVal = 0;
+   CFE_SB_MsgId_t MsgId;
 
-#ifndef MESSAGE_FORMAT_IS_CCSDS_VER_2  
-    MsgIdVal = CCSDS_RD_SID(MsgPtr->Hdr);
-#else
+   /* Ignore return since no alternative action */
+   CFE_MSG_GetMsgId(MsgPtr, &MsgId);
 
-    uint32            SubSystemId;
-
-    MsgIdVal = CCSDS_RD_APID(MsgPtr->Hdr); /* Primary header APID  */
-     
-    if ( CCSDS_RD_TYPE(MsgPtr->Hdr) == CCSDS_CMD)
-      MsgIdVal = MsgIdVal | CFE_SB_CMD_MESSAGE_TYPE;  
-
-    /* Add in the SubSystem ID as needed */
-    SubSystemId = CCSDS_RD_SUBSYSTEM_ID(MsgPtr->SpacePacket.ApidQ);
-    MsgIdVal = (MsgIdVal | (SubSystemId << 8));
-
-/* Example code to add in the System ID as needed. */
-/*   The default is to init this field to the Spacecraft ID but ignore for routing.   */
-/*   To fully implement this field would require significant SB optimization to avoid */
-/*   prohibitively large routing and index tables. */
-/*      uint16            SystemId;                              */
-/*      SystemId = CCSDS_RD_SYSTEM_ID(HdrPtr->ApidQ);            */
-/*      MsgIdVal = (MsgIdVal | (SystemId << 16)); */
-
-#endif
-
-return CFE_SB_ValueToMsgId(MsgIdVal);
+   return MsgId;
 
 }/* end CFE_SB_GetMsgId */
 
 
 /*
  * Function: CFE_SB_SetMsgId - See API and header file for details
+ * TODO deprecate
  */
 void CFE_SB_SetMsgId(CFE_SB_MsgPtr_t MsgPtr,
                      CFE_SB_MsgId_t MsgId)
 {
-    CFE_SB_MsgId_Atom_t MsgIdVal = CFE_SB_MsgIdToValue(MsgId);
 
-#ifndef MESSAGE_FORMAT_IS_CCSDS_VER_2  
-    CCSDS_WR_SID(MsgPtr->Hdr, MsgIdVal);
-#else
+  /* Ignore return, no alternate action */
+  CFE_MSG_SetMsgId(MsgPtr, MsgId);
+
+#ifdef MESSAGE_FORMAT_IS_CCSDS_VER_2
+  /* TODO Side effects likely undesireable from a mission perspective since
+   * they may be used for other purposes. Just because they aren't 
+   * used in MsgId doesn't mean they aren't used
+   *
+   * If this behavior is a requirement, then will fix these
+   */
+
+#if 0
   CCSDS_WR_VERS(MsgPtr->SpacePacket.Hdr, 1);
 
-  /* Set the stream ID APID in the primary header. */
   CCSDS_WR_APID(MsgPtr->SpacePacket.Hdr, CFE_SB_RD_APID_FROM_MSGID(MsgIdVal) );
-  
-  CCSDS_WR_TYPE(MsgPtr->SpacePacket.Hdr, CFE_SB_RD_TYPE_FROM_MSGID(MsgIdVal) );
-  
   
   CCSDS_CLR_SEC_APIDQ(MsgPtr->SpacePacket.ApidQ);
   
@@ -182,6 +167,7 @@ void CFE_SB_SetMsgId(CFE_SB_MsgPtr_t MsgPtr,
   CCSDS_WR_SUBSYSTEM_ID(MsgPtr->SpacePacket.ApidQ, CFE_SB_RD_SUBSYS_ID_FROM_MSGID(MsgIdVal));
   
   CCSDS_WR_SYSTEM_ID(MsgPtr->SpacePacket.ApidQ, CFE_MISSION_SPACECRAFT_ID);
+#endif
 
 #endif 
 }/* end CFE_SB_SetMsgId */
@@ -192,31 +178,12 @@ void CFE_SB_SetMsgId(CFE_SB_MsgPtr_t MsgPtr,
 uint32 CFE_SB_GetPktType(CFE_SB_MsgId_t MsgId)
 {
 
-  CFE_SB_MsgId_Atom_t Val = CFE_SB_MsgIdToValue(MsgId);
-  uint8 PktType;
+  CFE_MSG_Type_t type;
 
-  if (CFE_SB_IsValidMsgId(MsgId))
-  {
-#ifndef MESSAGE_FORMAT_IS_CCSDS_VER_2
-    if (CFE_TST(Val,12))
-    {
-      PktType = CFE_SB_PKTTYPE_CMD;
-    } else {
-      PktType = CFE_SB_PKTTYPE_TLM;
-    }
-#else
-    if (CFE_SB_RD_TYPE_FROM_MSGID(Val) == 1)
-    {
-      PktType = CFE_SB_PKTTYPE_CMD;
-    } else {
-      PktType = CFE_SB_PKTTYPE_TLM;
-    }
-#endif /* MESSAGE_FORMAT_IS_CCSDS_VER_2 */
-  } else {
-    PktType = CFE_SB_PKTTYPE_INVALID;
-  }
+  /* Ignores return, no alternate action */
+  CFE_MSG_GetTypeFromMsgId(MsgId, &type);
 
-  return PktType;
+  return type;
 
 }/* end CFE_SB_GetPktType */
 

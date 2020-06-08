@@ -1,3 +1,4 @@
+// TODO remove
 /*
 **  GSC-18128-1, "Core Flight Executive Version 6.7"
 **
@@ -32,10 +33,38 @@
 /*
 ** Include Files
 */
-
+// TODO this file will go away once all dependencies are cleaned up
+// TODO build with 6_8_ deprecated
 #include "common_types.h"
 #include "cfe_mission_cfg.h"
+#include "cfe_msg_hdr.h"
 
+/*
+ * COMPATIBILITY TYPEDEFS:
+ * These typdefs provide compatibility for existing code.  These should be
+ * removed in the next CFE release.
+ */
+#ifndef CFE_OMIT_DEPRECATED_6_6
+
+typedef CFE_MSG_CommandHeader_t     CCSDS_CmdPkt_t;
+typedef CFE_MSG_TelemetryHeader_t   CCSDS_TlmPkt_t;
+
+#endif /* CFE_OMIT_DEPRECATED_6_6 */
+
+#ifndef CFE_OMIT_DEPRECATED_6_8
+
+typedef struct{
+   CCSDS_PrimaryHeader_t Pri;
+   CCSDS_ExtendedHeader_t ApidQ;
+} CCSDS_APIDQHdr_t;
+typedef CCSDS_ExtendedHeader_t CCSDS_APIDqualifiers_t;
+typedef CCSDS_PrimaryHeader_t  CCSDS_PriHdr_t;
+typedef CFE_MSG_CommandSecondaryHeader_t CCSDS_CmdSecHdr_t;
+typedef CFE_MSG_TelemetrySecondaryHeader_t CCSDS_TlmSecHdr_t;
+typedef CFE_MSG_CommandHeader_t CCSDS_CommandPacket_t;  /* Element names changed, direct access will break */
+typedef CFE_MSG_TelemetryHeader_t CCSDS_TelemetryPacket_t;  /* Element names changed, direct access will break */
+
+#endif /* CFE_OMIT_DEPRECATED_6_8 */
 
 /* Macro to convert 16/32 bit types from platform "endianness" to Big Endian */
 #ifdef SOFTWARE_BIG_BIT_ORDER
@@ -46,83 +75,7 @@
   #define CFE_MAKE_BIG32(n) ( (((n) << 24) & 0xFF000000) | (((n) << 8) & 0x00FF0000) | (((n) >> 8) & 0x0000FF00) | (((n) >> 24) & 0x000000FF) )
 #endif
 
-
-/* CCSDS_TIME_SIZE is specific to the selected CFE_SB time format */
-#if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
-  /* 32 bits seconds + 16 bits subseconds */
-  #define CCSDS_TIME_SIZE 6
-#elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_SUBS)
-  /* 32 bits seconds + 32 bits subseconds */
-  #define CCSDS_TIME_SIZE 8
-#elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_M_20)
-  /* 32 bits seconds + 20 bits microsecs + 12 bits reserved */
-  #define CCSDS_TIME_SIZE 8
-#else
-  /* unknown format */
-  #error unable to define CCSDS_TIME_SIZE!
-#endif
-
-
-/*
-** Type Definitions
-*/
-
-/**********************************************************************
-** Structure definitions for CCSDS headers.  All items in the structure
-** must be aligned on 16-bit words.  Bitfields must be avoided since
-** some compilers (such as gcc) force them into 32-bit alignment.
-**
-** CCSDS headers must always be in network byte order per the standard.
-** MSB at the lowest address which is commonly refered to as "BIG Endian"
-**
-** CCSDS Space Packets can be version 1 or version 2.  Version 2 has 
-** an additional 32 bits for APID Qualifier fields in the secondary 
-** header. The primary header is unchanged.
-**
-**********************************************************************/
-
-/*----- CCSDS packet primary header. -----*/
-
-typedef struct {
-
-   uint8   StreamId[2];  /* packet identifier word (stream ID) */
-      /*  bits  shift   ------------ description ---------------- */
-      /* 0x07FF    0  : application ID                            */
-      /* 0x0800   11  : secondary header: 0 = absent, 1 = present */
-      /* 0x1000   12  : packet type:      0 = TLM, 1 = CMD        */
-      /* 0xE000   13  : CCSDS version:    0 = ver 1, 1 = ver 2    */
-
-   uint8   Sequence[2];  /* packet sequence word */
-      /*  bits  shift   ------------ description ---------------- */
-      /* 0x3FFF    0  : sequence count                            */
-      /* 0xC000   14  : segmentation flags:  3 = complete packet  */
-
-   uint8  Length[2];     /* packet length word */
-      /*  bits  shift   ------------ description ---------------- */
-      /* 0xFFFF    0  : (total packet length) - 7                 */
-
-} CCSDS_PriHdr_t;
-
-/*----- CCSDS command secondary header. -----*/
-
-typedef struct {
-
-   uint8 FunctionCode; /* Command Function Code */
-                       /* bits shift ---------description-------- */
-                       /* 0x7F  0    Command function code        */
-                       /* 0x80  7    Reserved                     */
-
-   uint8 Checksum;     /* Command checksum  (all bits, 0xFF)      */
-
-} CCSDS_CmdSecHdr_t;
-
-/*----- CCSDS telemetry secondary header. -----*/
-
-typedef struct {
-
-   uint8  Time[CCSDS_TIME_SIZE];
-
-} CCSDS_TlmSecHdr_t;
+#if 0 /* all the way to the end... */
 
 /*----- CCSDS Endian Flag in the APID Qualifier Field. -----*/
 #define CCSDS_BIG_ENDIAN 0
@@ -139,79 +92,6 @@ typedef struct {
 /* This is the verion of the data sheet that defines the packet payload format and other */
 /* metadata like unit conversions */
 #define CCSDS_EDS_MASK 0xF800
-
-/*----- CCSDS Secondary Header APID Qualifers ----*/
-typedef struct {
-
-   uint8 APIDQSubsystem[2];
-
-      /*  bits  shift   ------------ description ---------------- */
-      /* 0x01FF   0  : Subsystem Id  mission defined              */
-      /* 0x0200   9  : Playback flag  0 = original, 1 = playback  */
-      /* 0x0400  10  : Endian:   Big = 0, Little (Intel) = 1      */
-      /* 0xF800  11  : EDS Version for packet definition used     */
- 
-   uint8 APIDQSystemId[2];
-      /* 0xFFFF   0  : System Id      mission defined             */
-
-} CCSDS_APIDqualifiers_t;
-
-/**
- * \brief CCSDS Primary with APID Qualifier Header Type Definition
- */
-typedef struct{
-    CCSDS_PriHdr_t         Pri;/**< \brief CCSDS Primary Header #CCSDS_PriHdr_t */
-    CCSDS_APIDqualifiers_t ApidQ;/**< \brief CCSDS APID Qualifier Secondary Header #CCSDS_APIDqualifiers_t */
-}CCSDS_APIDQHdr_t;
-
-typedef struct
-{
-    /*
-     * In Version 1 mode, the standard / non-APID qualified header is used for all packets
-     */
-    CCSDS_PriHdr_t      Hdr;    /**< Complete "version 1" (standard) header */
-
-#ifdef MESSAGE_FORMAT_IS_CCSDS_VER_2
-
-    /*
-     * In Version 2 mode, the extended / APID qualified header is used for all packets
-     */
-    CCSDS_APIDqualifiers_t ApidQ;/**< \brief CCSDS APID Qualifier Secondary Header #CCSDS_APIDqualifiers_t */
-#endif  /* MESSAGE_FORMAT_IS_CCSDS_VER_2 */
-
-} CCSDS_SpacePacket_t;
-
-
-
-
-/*----- Generic combined command header. -----*/
-
-typedef struct
-{
-    CCSDS_SpacePacket_t  SpacePacket;   /**< \brief Standard Header on all packets  */
-    CCSDS_CmdSecHdr_t    Sec;
-} CCSDS_CommandPacket_t;
-
-/*----- Generic combined telemetry header. -----*/
-
-typedef struct
-{
-    CCSDS_SpacePacket_t  SpacePacket;   /**< \brief Standard Header on all packets */
-    CCSDS_TlmSecHdr_t    Sec;
-} CCSDS_TelemetryPacket_t;
-
-/*
- * COMPATIBILITY TYPEDEFS:
- * These types were defined by CFE 6.5 and below and applications may still use them.
- * These typdefs provide compatibility for existing code.  These should be
- * removed in the next CFE release.
- */
-#ifndef CFE_OMIT_DEPRECATED_6_6
-
-typedef CCSDS_CommandPacket_t     CCSDS_CmdPkt_t;
-typedef CCSDS_TelemetryPacket_t   CCSDS_TlmPkt_t;
-
-#endif /* CFE_OMIT_DEPRECATED_6_6 */
 
 /*
 ** Macro Definitions
@@ -473,6 +353,7 @@ typedef CCSDS_TelemetryPacket_t   CCSDS_TlmPkt_t;
 ** Exported Functions
 */
 
+#ifndef CFE_OMIT_DEPRECATED_6_8
 
 /******************************************************************************
 **  Function:  CCSDS_LoadCheckSum()
@@ -528,7 +409,8 @@ bool CCSDS_ValidCheckSum (CCSDS_CommandPacket_t *PktPtr);
 */
 
 uint8 CCSDS_ComputeCheckSum (CCSDS_CommandPacket_t *PktPtr);
-
+#endif /* CFE_OMIT_DEPRECATED_6_8 */
+#endif
 
 #endif  /* _ccsds_ */
 /*****************************************************************************/

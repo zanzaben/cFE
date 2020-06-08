@@ -60,7 +60,8 @@
 /*
 ** Macro Definitions
 */
-
+// TODO delete
+#if 0
 /* 
  * Mission defined bit used to indicate message is a command type. A 0 in this bit position indicates 
  * a telemetry message type. This bit is included in the message id.
@@ -73,6 +74,7 @@
 #define CFE_SB_RD_APID_FROM_MSGID(MsgId)         (MsgId & 0x0000007F) /* 0-6(7) bits for Pri Hdr APID */
 #define CFE_SB_RD_SUBSYS_ID_FROM_MSGID(MsgId)  ( (MsgId & 0x0000FF00) >> 8) /* bits 8-15(8) bits for APID Subsystem ID */ 
 #define CFE_SB_RD_TYPE_FROM_MSGID(MsgId)       ( (MsgId & CFE_SB_CMD_MESSAGE_TYPE) >> 7) /* 1 Cmd/Tlm Bit (bit #7) */
+#endif
 
 #endif /* _cfe_sb_msg_id_util_ */
 /*****************************************************************************/

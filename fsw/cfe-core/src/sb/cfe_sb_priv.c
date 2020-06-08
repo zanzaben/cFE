@@ -86,6 +86,7 @@
 #include "cfe_error.h"
 #include "cfe_es.h"
 #include "cfe_sb_msg_id_util.h"
+#include "cfe_msg_api.h"
 #include <string.h>
 
 /******************************************************************************
@@ -551,7 +552,8 @@ int32 CFE_SB_DuplicateSubscribeCheck(CFE_SB_MsgKey_t MsgKey,
 */
 void CFE_SB_SetMsgSeqCnt(CFE_SB_MsgPtr_t MsgPtr,uint32 Count){
 
-    CCSDS_WR_SEQ(MsgPtr->Hdr,Count);
+    /* TODO deprecate */
+    CFE_MSG_SetSequenceCount(MsgPtr, Count);
 
 }/* end CFE_SB_SetMsgSeqCnt */
 
