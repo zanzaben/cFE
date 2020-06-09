@@ -133,7 +133,7 @@ int32 CFE_MSG_SetType(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t Type)
     }
     else
     {
-        MsgPtr->CCSDS.Pri.StreamId[0] &= ~CFE_MSG_TYPE_MASK >> 8;
+        MsgPtr->CCSDS.Pri.StreamId[0] &= ~(CFE_MSG_TYPE_MASK >> 8);
     }
 
     return CFE_SUCCESS;
@@ -171,7 +171,7 @@ int32 CFE_MSG_SetHasSecondaryHeader(CFE_MSG_Message_t *MsgPtr, bool HasSecondary
     }
     else
     {
-        MsgPtr->CCSDS.Pri.StreamId[0] &= ~CFE_MSG_SHDR_MASK >> 8;
+        MsgPtr->CCSDS.Pri.StreamId[0] &= ~(CFE_MSG_SHDR_MASK >> 8);
     }
 
     return CFE_SUCCESS;
