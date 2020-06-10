@@ -28,12 +28,10 @@ set(MODULE_SRCS
 if (MISSION_INCLUDE_CCSDSEXT_HEADER)
     list(APPEND MODULE_SRCS
         src/cfe_msg_ccsdsext.c
-        src/cfe_msg_initdefaulthdr_v2.c
-)
+        src/cfe_msg_initdefaulthdr_v2.c)
 else (MISSION_INCLUDE_CCSDSEXT_HEADER)
     list(APPEND MODULE_SRCS
-        src/cfe_msg_initdefaulthdr_v1.c
-)
+        src/cfe_msg_initdefaulthdr_v1.c)
 endif (MISSION_INCLUDE_CCSDSEXT_HEADER)
 
 add_library(${MODULE_NAME} STATIC ${MODULE_SRCS})

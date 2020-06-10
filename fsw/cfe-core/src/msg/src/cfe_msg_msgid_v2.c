@@ -69,7 +69,7 @@ int32 CFE_MSG_GetMsgId(const CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t *MsgId)
     {
         msgidval |= CFE_MSG_MSGID_TYPE_MASK;
     }
-    msgidval |= (MsgPtr->CCSDS.Ext.APIDQSubsystem[1] << 8) & CFE_MSG_MSGID_SUBSYS_MASK;
+    msgidval |= (MsgPtr->CCSDS.Ext.Subsystem[1] << 8) & CFE_MSG_MSGID_SUBSYS_MASK;
 
     *MsgId = CFE_SB_ValueToMsgId(msgidval);
 
@@ -94,7 +94,7 @@ int32 CFE_MSG_SetMsgId(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId)
         (MsgPtr->CCSDS.Pri.StreamId[1] & ~CFE_MSG_MSGID_APID_MASK) | (msgidval & CFE_MSG_MSGID_APID_MASK);
 
     /* Set APIDQ Subsystem bits */
-    MsgPtr->CCSDS.Ext.APIDQSubsystem[1] = ((msgidval & CFE_MSG_MSGID_SUBSYS_MASK) >> 8);
+    MsgPtr->CCSDS.Ext.Subsystem[1] = ((msgidval & CFE_MSG_MSGID_SUBSYS_MASK) >> 8);
 
     /* Set type, ignores return since no failure action */
     if ((msgidval & CFE_MSG_MSGID_TYPE_MASK) != 0)

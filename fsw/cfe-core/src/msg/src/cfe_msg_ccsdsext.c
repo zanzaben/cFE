@@ -51,7 +51,7 @@ void CFE_MSG_SetDefaultCCSDSExt(CFE_MSG_Message_t *MsgPtr)
 
     /* Default bits of the subsystem, for whatever isn't set by MsgId */
     CFE_MSG_SetSubsystem(MsgPtr, (CFE_MSG_Subsystem_t)CFE_PLATFORM_DEFAULT_SUBSYS);
-    CFE_MSB_SetSystem(MsgPtr, (CFE_MSG_System_t)CFE_MISSION_SPACECRAFT_ID);
+    CFE_MSG_SetSystem(MsgPtr, (CFE_MSG_System_t)CFE_MISSION_SPACECRAFT_ID);
 }
 
 /******************************************************************************
@@ -188,7 +188,7 @@ int32 CFE_MSG_GetSubsystem(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t 
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    CFE_MSG_GetHeaderField(MsgPtr->CCSDS.Ext.Subsystem, Subsystem, CFE_MSG_SUBSYSTEM_MASK);
+    CFE_MSG_GetHeaderField(MsgPtr->CCSDS.Ext.Subsystem, Subsystem, CFE_MSG_SUBSYS_MASK);
 
     return CFE_SUCCESS;
 }
@@ -198,12 +198,12 @@ int32 CFE_MSG_GetSubsystem(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t 
  */
 int32 CFE_MSG_SetSubsystem(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t Subsystem)
 {
-    if (MsgPtr == NULL || ((Subsystem & CFE_MSG_SUBSYSTEM_MASK) != 0))
+    if (MsgPtr == NULL || ((Subsystem & CFE_MSG_SUBSYS_MASK) != 0))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Ext.Subsystem, Subsystem, CFE_MSG_SUBSYSTEM_MASK);
+    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Ext.Subsystem, Subsystem, CFE_MSG_SUBSYS_MASK);
 
     return CFE_SUCCESS;
 }
@@ -219,7 +219,7 @@ int32 CFE_MSG_GetSystem(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_System_t *Syste
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    *System = (MSGPtr->CCSDS.Ext.SystemId[0] << 8) + MsgPtr->CCSDS.Ext.SystemId[1];
+    *System = (MsgPtr->CCSDS.Ext.SystemId[0] << 8) + MsgPtr->CCSDS.Ext.SystemId[1];
 
     return CFE_SUCCESS;
 }
@@ -234,8 +234,8 @@ int32 CFE_MSG_SetSystem(CFE_MSG_Message_t *MsgPtr, CFE_MSG_System_t System)
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    MSGPtr->CCSDS.Ext.SystemId[0] = (System >> 8) & 0xFF;
-    MSGPtr->CCSDS.Ext.SystemId[1] = System & 0xFF;
+    MsgPtr->CCSDS.Ext.SystemId[0] = (System >> 8) & 0xFF;
+    MsgPtr->CCSDS.Ext.SystemId[1] = System & 0xFF;
 
     return CFE_SUCCESS;
 }
