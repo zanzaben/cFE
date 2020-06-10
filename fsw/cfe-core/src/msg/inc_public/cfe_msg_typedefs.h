@@ -76,6 +76,6 @@ typedef enum
     CFE_MSG_PlayFlag_Invalid,  /**< \brief Invalid playback setting */
     CFE_MSG_PlayFlag_Original, /**< \brief Original */
     CFE_MSG_PlayFlag_Playback  /**< \brief Playback */
-} CFE_MSG_PlayFlag_t;
+} CFE_MSG_PlaybackFlag_t;
 
 #endif /* _cfe_msg_typedefs_ */

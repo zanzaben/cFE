@@ -294,13 +294,13 @@ int32 CFE_MSG_SetSequenceCount(CFE_MSG_Message_t *MsgPtr, CFE_MSG_SequenceCount_
  *          This routine gets the message EDS version.
  *
  * \param[in]    MsgPtr      A pointer to the buffer that contains the message.
- * \param[out]   EDSVer      EDS Version
+ * \param[out]   Version     EDS Version
  *
  * \return Execution status, see \ref CFEReturnCodes
  * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
  * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
  */
-int32 CFE_MSG_GetEDSVer(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t *EDSVer);
+int32 CFE_MSG_GetEDSVersion(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t *Version);
 
 /*****************************************************************************/
 /**
@@ -310,13 +310,13 @@ int32 CFE_MSG_GetEDSVer(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t *E
  *          This routine sets the message EDS version.
  *
  * \param[in, out]  MsgPtr      A pointer to the buffer that contains the message.
- * \param[in]       EDSVer      EDS Version
+ * \param[in]       Version     EDS Version
  *
  * \return Execution status, see \ref CFEReturnCodes
  * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
  * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
  */
-int32 CFE_MSG_SetEDSVer(CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t EDSVer);
+int32 CFE_MSG_SetEDSVersion(CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t Version);
 
 /*****************************************************************************/
 /**
@@ -339,7 +339,8 @@ int32 CFE_MSG_GetEndian(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t *Endia
  * \brief Sets the message endian
  *
  * \par Description
- *          This routine sets the message endian.
+ *          This routine sets the message endian.  Invalid endian selection
+ *          will set big endian.
  *
  * \param[in, out]  MsgPtr      A pointer to the buffer that contains the message.
  * \param[in]       Endian      Endian
@@ -350,7 +351,105 @@ int32 CFE_MSG_GetEndian(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t *Endia
  */
 int32 CFE_MSG_SetEndian(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t Endian);
 
-// TODO playback, subsystem, system
+/*****************************************************************************/
+/**
+ * \brief Gets the message playback flag
+ *
+ * \par Description
+ *          This routine gets the message playback flag.
+ *
+ * \param[in]    MsgPtr      A pointer to the buffer that contains the message.
+ * \param[out]   PlayFlag    Playback Flag
+ *
+ * \return Execution status, see \ref CFEReturnCodes
+ * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
+ * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
+ */
+int32 CFE_MSG_GetPlaybackFlag(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_PlaybackFlag_t *PlayFlag);
+
+/*****************************************************************************/
+/**
+ * \brief Sets the message playback flag
+ *
+ * \par Description
+ *          This routine sets the message playback flag.
+ *
+ * \param[in, out]    MsgPtr      A pointer to the buffer that contains the message.
+ * \param[in]         PlayFlag    Playback Flag
+ *
+ * \return Execution status, see \ref CFEReturnCodes
+ * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
+ * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
+ */
+int32 CFE_MSG_SetPlaybackFlag(CFE_MSG_Message_t *MsgPtr, CFE_MSG_PlaybackFlag_t PlayFlag);
+
+/*****************************************************************************/
+/**
+ * \brief Gets the message subsystem
+ *
+ * \par Description
+ *          This routine gets the message subsystem
+ *
+ * \param[in]  MsgPtr       A pointer to the buffer that contains the message.
+ * \param[out] Subsystem    Subsystem
+ *
+ * \return Execution status, see \ref CFEReturnCodes
+ * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
+ * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
+ */
+int32 CFE_MSG_GetSubsystem(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t *Subsystem);
+
+/*****************************************************************************/
+/**
+ * \brief Sets the message subsystem
+ *
+ * \par Description
+ *          This routine sets the message subsystem. Some bits may
+ *          be set at initialization using the MsgId, but API available to set
+ *          bits that may not be included in MsgId.
+ *
+ * \param[in, out]  MsgPtr       A pointer to the buffer that contains the message.
+ * \param[in]       Subsystem    Subsystem
+ *
+ * \return Execution status, see \ref CFEReturnCodes
+ * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
+ * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
+ */
+int32 CFE_MSG_SetSubsystem(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t Subsystem);
+
+/*****************************************************************************/
+/**
+ * \brief Gets the message system
+ *
+ * \par Description
+ *          This routine gets the message system id
+ *
+ * \param[in]  MsgPtr       A pointer to the buffer that contains the message.
+ * \param[out] System       System
+ *
+ * \return Execution status, see \ref CFEReturnCodes
+ * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
+ * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
+ */
+int32 CFE_MSG_GetSystem(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_System_t *System);
+
+/*****************************************************************************/
+/**
+ * \brief Sets the message system
+ *
+ * \par Description
+ *          This routine sets the message system id. Some bits may
+ *          be set at initialization using the MsgId, but API available to set
+ *          bits that may not be included in MsgId.
+ *
+ * \param[in, out]  MsgPtr       A pointer to the buffer that contains the message.
+ * \param[in]       System       System
+ *
+ * \return Execution status, see \ref CFEReturnCodes
+ * \retval #CFE_SUCCESS             \copybrief CFE_SUCCESS
+ * \retval #CFE_MSG_BAD_ARGUMENT    \copybrief CFE_MSG_BAD_ARGUMENT
+ */
+int32 CFE_MSG_SetSystem(CFE_MSG_Message_t *MsgPtr, CFE_MSG_System_t System);
 
 /*****************************************************************************/
 /**

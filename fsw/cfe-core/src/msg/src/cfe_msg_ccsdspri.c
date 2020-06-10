@@ -103,7 +103,7 @@ int32 CFE_MSG_GetType(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t *Type)
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    if (MsgPtr->CCSDS.Pri.StreamId[0] & (CFE_MSG_TYPE_MASK >> 8))
+    if ((MsgPtr->CCSDS.Pri.StreamId[0] & (CFE_MSG_TYPE_MASK >> 8)) != 0)
     {
         *Type = CFE_MSG_Type_Cmd;
     }
@@ -120,7 +120,7 @@ int32 CFE_MSG_GetType(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t *Type)
  */
 int32 CFE_MSG_SetType(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t Type)
 {
-    if (MsgPtr == NULL)
+    if (MsgPtr == NULL || Type == CFE_MSG_Type_Invalid)
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -272,7 +272,10 @@ int32 CFE_MSG_SetSegmentationFlag(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Segmentatio
             status = CFE_MSG_BAD_ARGUMENT;
     }
 
-    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Pri.Sequence, rawval, CFE_MSG_SEGFLG_MASK);
+    if (status == CFE_SUCCESS)
+    {
+        CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Pri.Sequence, rawval, CFE_MSG_SEGFLG_MASK);
+    }
 
     return status;
 }
