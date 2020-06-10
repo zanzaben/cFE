@@ -42,8 +42,8 @@
 #include "cfe_error.h"
 
 /* cFS MsgId definitions */
-#define CFE_MSG_MSGID_APID_MASK  0x007F  /**< \brief CCSDS ApId mask for MsgId */
-#define CFE_MSG_MSGID_TYPE_MASK  0x0080  /**< \brief Message type mask for MsgId, set = cmd */
+#define CFE_MSG_MSGID_APID_MASK   0x007F /**< \brief CCSDS ApId mask for MsgId */
+#define CFE_MSG_MSGID_TYPE_MASK   0x0080 /**< \brief Message type mask for MsgId, set = cmd */
 #define CFE_MSG_MSGID_SUBSYS_MASK 0xFF00 /**< \brief Subsystem mask for MsgId */
 
 /******************************************************************************
@@ -53,7 +53,7 @@ int32 CFE_MSG_GetMsgId(const CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t *MsgId)
 {
 
     CFE_SB_MsgId_Atom_t msgidval;
-    CFE_MSG_Type_t type;
+    CFE_MSG_Type_t      type;
 
     if (MsgPtr == NULL || MsgId == NULL)
     {
@@ -90,8 +90,8 @@ int32 CFE_MSG_SetMsgId(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId)
     }
 
     /* Clear and set PID_MSGID_MASK bits */
-    MsgPtr->CCSDS.Pri.StreamId[1] = (MsgPtr->CCSDS.Pri.StreamId[1] & ~CFE_MSG_MSGID_APID_MASK) |
-                                    (msgidval & CFE_MSG_MSGID_APID_MASK);
+    MsgPtr->CCSDS.Pri.StreamId[1] =
+        (MsgPtr->CCSDS.Pri.StreamId[1] & ~CFE_MSG_MSGID_APID_MASK) | (msgidval & CFE_MSG_MSGID_APID_MASK);
 
     /* Set APIDQ Subsystem bits */
     MsgPtr->CCSDS.Ext.APIDQSubsystem[1] = ((msgidval & CFE_MSG_MSGID_SUBSYS_MASK) >> 8);

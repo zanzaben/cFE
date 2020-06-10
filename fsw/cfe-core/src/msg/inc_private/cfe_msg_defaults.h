@@ -38,23 +38,23 @@
 
 /* Backwards compatibility - TODO could just force users to define */
 #ifndef CFE_PLATFORM_DEFAULT_APID
-  #define CFE_PLATFORM_DEFAULT_APID 0  /**< \brief Default APID, for bits not in MsgId */
+#define CFE_PLATFORM_DEFAULT_APID 0 /**< \brief Default APID, for bits not in MsgId */
 #endif
 
 #ifndef CFE_MISSION_CCSDSVER
-  #ifdef MESSAGE_FORMAT_IS_CCSDS_VER_2
-    #define CFE_MISSION_CCSDSVER 1  /**< \brief Default CCSDS Version, cFS Ver 2 historically = 1 */
-  #else
-    #define CFE_MISSION_CCSDSVER 0  /**< \brief Default CCSDS Version, cFS Ver 1 historically = 0 */
-  #endif
+#ifdef MESSAGE_FORMAT_IS_CCSDS_VER_2
+#define CFE_MISSION_CCSDSVER 1 /**< \brief Default CCSDS Version, cFS Ver 2 historically = 1 */
+#else
+#define CFE_MISSION_CCSDSVER 0 /**< \brief Default CCSDS Version, cFS Ver 1 historically = 0 */
+#endif
 #endif
 
 #ifndef CFE_PLATFORM_DEFAULT_SUBSYS
-  #define CFE_PLATFORM_DEFAULT_SUBSYS 0  /**< \brief Default SubSystem, for bits not in MsgId */
-#endif 
+#define CFE_PLATFORM_DEFAULT_SUBSYS 0 /**< \brief Default SubSystem, for bits not in MsgId */
+#endif
 
 #ifndef CFE_PLATFORM_EDSVER
-  #define CFE_PLATFORM_EDSVER 1  /**< \brief Default EDS version, cFS historically = 1 */
+#define CFE_PLATFORM_EDSVER 1 /**< \brief Default EDS version, cFS historically = 1 */
 #endif
 
 /*****************************************************************************/

@@ -352,7 +352,6 @@ int32 CFE_MSG_SetEndian(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t Endian);
 
 // TODO playback, subsystem, system
 
-
 /*****************************************************************************/
 /**
  * \brief Calculates and sets the checksum of a message
@@ -436,7 +435,7 @@ int32 CFE_MSG_SetFcnCode(CFE_MSG_Message_t *MsgPtr, CFE_MSG_FcnCode_t FcnCode);
  *
  * \par Assumptions, External Events, and Notes:
  *          - If the underlying implementation of messages does not
- *            include a function code field, then this routine will 
+ *            include a function code field, then this routine will
  *            set FcnCode to zero and return #CFE_MSG_WRONG_MSG_TYPE
  *
  * \param[in]  MsgPtr      A pointer to the buffer that contains the message.

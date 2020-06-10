@@ -40,9 +40,9 @@
  * Defines
  */
 /* TODO error bits won't fit a new module */
-#define CFE_MSG_BAD_ARGUMENT    CFE_SB_BAD_ARGUMENT /**< \brief Error - bad argument */
+#define CFE_MSG_BAD_ARGUMENT    CFE_SB_BAD_ARGUMENT    /**< \brief Error - bad argument */
 #define CFE_MSG_NOT_IMPLEMENTED CFE_SB_NOT_IMPLEMENTED /**< \brief Error - not implemented */
-#define CFE_MSG_WRONG_MSG_TYPE  CFE_SB_WRONG_MSG_TYPE /**< \brief Error - wrong type */
+#define CFE_MSG_WRONG_MSG_TYPE  CFE_SB_WRONG_MSG_TYPE  /**< \brief Error - wrong type */
 
 /*****************************************************************************/
 /**

@@ -33,10 +33,10 @@
 int32 CFE_MSG_SetMsgTime(CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t NewTime)
 {
 
-    uint32 status;
-    CFE_MSG_Type_t type;
-    bool hassechdr = false;
-    CFE_MSG_TelemetryHeader_t *tlm = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
+    uint32                     status;
+    CFE_MSG_Type_t             type;
+    bool                       hassechdr = false;
+    CFE_MSG_TelemetryHeader_t *tlm       = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
 
     if (MsgPtr == NULL)
     {
@@ -69,10 +69,10 @@ int32 CFE_MSG_SetMsgTime(CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t NewTime)
 int32 CFE_MSG_GetMsgTime(const CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t *Time)
 {
 
-    uint32 status;
-    CFE_MSG_Type_t type;
-    bool hassechdr = false;
-    CFE_MSG_TelemetryHeader_t *tlm = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
+    uint32                     status;
+    CFE_MSG_Type_t             type;
+    bool                       hassechdr = false;
+    CFE_MSG_TelemetryHeader_t *tlm       = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
 
     if (MsgPtr == NULL || Time == NULL)
     {
@@ -90,8 +90,7 @@ int32 CFE_MSG_GetMsgTime(const CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t *Ti
 
     /* Get big endian time fields with default 32/16 layout */
     Time->Subseconds = (tlm->Sec.Time[4] << 24) + (tlm->Sec.Time[5] << 16);
-    Time->Seconds = (tlm->Sec.Time[0] << 24) + (tlm->Sec.Time[1] << 16) +
-                    (tlm->Sec.Time[2] << 8) + tlm->Sec.Time[4];
+    Time->Seconds    = (tlm->Sec.Time[0] << 24) + (tlm->Sec.Time[1] << 16) + (tlm->Sec.Time[2] << 8) + tlm->Sec.Time[4];
 
     return CFE_SUCCESS;
 }

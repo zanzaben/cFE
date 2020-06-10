@@ -19,7 +19,7 @@
 */
 
 /******************************************************************************
- * Message initialization 
+ * Message initialization
  */
 #include "cfe_msg_api.h"
 #include "cfe_msg_priv.h"
@@ -32,7 +32,7 @@
 int32 CFE_MSG_Init(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId, CFE_MSG_Size_t Size, bool Clear)
 {
 
-    if (MsgPtr == NULL )
+    if (MsgPtr == NULL)
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -40,7 +40,7 @@ int32 CFE_MSG_Init(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId, CFE_MSG_Size
     /* Clear and set defaults if request */
     if (Clear)
     {
-        memset(MsgPtr, 0, Size); 
+        memset(MsgPtr, 0, Size);
         CFE_MSG_InitDefaultHdr(MsgPtr);
     }
 

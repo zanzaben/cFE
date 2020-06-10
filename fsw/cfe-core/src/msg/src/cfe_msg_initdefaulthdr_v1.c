@@ -30,5 +30,5 @@
  */
 void CFE_MSG_InitDefaultHdr(CFE_MSG_Message_t *MsgPtr)
 {
-   CFE_MSG_SetDefaultCCSDSPri(MsgPtr);
+    CFE_MSG_SetDefaultCCSDSPri(MsgPtr);
 }

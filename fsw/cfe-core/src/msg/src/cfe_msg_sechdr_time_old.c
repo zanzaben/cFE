@@ -32,10 +32,10 @@
 int32 CFE_MSG_SetMsgTime(CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t NewTime)
 {
 
-    uint32 status;
-    CFE_MSG_Type_t type;
-    bool hassechdr = false;
-    CFE_MSG_TelemetryHeader_t *tlm = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
+    uint32                     status;
+    CFE_MSG_Type_t             type;
+    bool                       hassechdr = false;
+    CFE_MSG_TelemetryHeader_t *tlm       = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
 
 /* declare format specific vars */
 #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
@@ -88,10 +88,10 @@ int32 CFE_MSG_SetMsgTime(CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t NewTime)
 int32 CFE_MSG_GetMsgTime(const CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t *Time)
 {
 
-    uint32 status;
-    CFE_MSG_Type_t type;
-    bool hassechdr = false;
-    CFE_MSG_TelemetryHeader_t *tlm = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
+    uint32                     status;
+    CFE_MSG_Type_t             type;
+    bool                       hassechdr = false;
+    CFE_MSG_TelemetryHeader_t *tlm       = (CFE_MSG_TelemetryHeader_t *)MsgPtr;
 
 #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
     uint16 LocalSubs16;
@@ -129,7 +129,7 @@ int32 CFE_MSG_GetMsgTime(const CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t *Ti
 
     memcpy(&LocalSubs32, &tlm->Sec.Time[4], 4);
     /* convert packet data into CFE_TIME_SysTime_t format */
-    Time->Subseconds= CFE_TIME_Micro2SubSecs((LocalSubs32 >> 12));
+    Time->Subseconds = CFE_TIME_Micro2SubSecs((LocalSubs32 >> 12));
 
 #endif
 

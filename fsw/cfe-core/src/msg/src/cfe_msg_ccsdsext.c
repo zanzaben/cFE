@@ -52,5 +52,4 @@ void CFE_MSG_SetDefaultCCSDSExt(CFE_MSG_Message_t *MsgPtr)
     /* Default bits of the subsystem, for whatever isn't set by MsgId */
     CFE_MSG_SetSubsystem(MsgPtr, (CFE_MSG_Subsystem_t)CFE_PLATFORM_DEFAULT_SUBSYS);
     CFE_MSB_SetSystem(MsgPtr, (CFE_MSG_System_t)CFE_MISSION_SPACECRAFT_ID);
-
 }

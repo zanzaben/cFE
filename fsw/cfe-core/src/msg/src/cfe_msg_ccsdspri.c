@@ -57,7 +57,6 @@ void CFE_MSG_SetDefaultCCSDSPri(CFE_MSG_Message_t *MsgPtr)
 
     /* Default to complete packets */
     CFE_MSG_SetSegmentationFlag(MsgPtr, CFE_MSG_SegFlag_Unsegmented);
-
 }
 
 /******************************************************************************
@@ -75,7 +74,6 @@ int32 CFE_MSG_GetHeaderVersion(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_HeaderVe
     *Version >>= CFE_MSG_CCSDSVER_SHIFT;
 
     return CFE_SUCCESS;
-
 }
 
 /******************************************************************************
@@ -191,7 +189,6 @@ int32 CFE_MSG_GetApId(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_ApId_t *ApId)
     CFE_MSG_GetHeaderField(MsgPtr->CCSDS.Pri.StreamId, ApId, CFE_MSG_APID_MASK);
 
     return CFE_SUCCESS;
-
 }
 
 /******************************************************************************
@@ -224,7 +221,7 @@ int32 CFE_MSG_GetSegmentationFlag(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Segme
 
     CFE_MSG_GetHeaderField(MsgPtr->CCSDS.Pri.Sequence, &rawval, CFE_MSG_SEGFLG_MASK);
 
-    switch(rawval)
+    switch (rawval)
     {
         case CFE_MSG_SEGFLG_CNT:
             *SegFlag = CFE_MSG_SegFlag_Continue;
@@ -241,7 +238,6 @@ int32 CFE_MSG_GetSegmentationFlag(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Segme
     }
 
     return CFE_SUCCESS;
-
 }
 
 /******************************************************************************
@@ -250,14 +246,14 @@ int32 CFE_MSG_GetSegmentationFlag(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Segme
 int32 CFE_MSG_SetSegmentationFlag(CFE_MSG_Message_t *MsgPtr, CFE_MSG_SegmentationFlag_t SegFlag)
 {
     uint16 rawval = 0;
-    int32 status = CFE_SUCCESS;
+    int32  status = CFE_SUCCESS;
 
     if (MsgPtr == NULL)
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    switch(SegFlag)
+    switch (SegFlag)
     {
         case CFE_MSG_SegFlag_Continue:
             rawval = CFE_MSG_SEGFLG_CNT;
@@ -295,7 +291,6 @@ int32 CFE_MSG_GetSequenceCount(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Sequence
     CFE_MSG_GetHeaderField(MsgPtr->CCSDS.Pri.Sequence, SeqCnt, CFE_MSG_SEQCNT_MASK);
 
     return CFE_SUCCESS;
-
 }
 
 /******************************************************************************

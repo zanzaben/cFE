@@ -42,7 +42,7 @@ int32 CFE_MSG_GetMsgId(const CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t *MsgId)
     }
 
     msgidval = (MsgPtr->CCSDS.Pri.StreamId[0] << 8) + MsgPtr->CCSDS.Pri.StreamId[1];
-    *MsgId = CFE_SB_ValueToMsgId(msgidval);
+    *MsgId   = CFE_SB_ValueToMsgId(msgidval);
 
     return CFE_SUCCESS;
 }
