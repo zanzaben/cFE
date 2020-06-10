@@ -76,6 +76,7 @@ typedef CFE_MSG_TelemetryHeader_t CCSDS_TelemetryPacket_t;  /* Element names cha
 #endif
 
 #if 0 /* all the way to the end... */
+/* TODO deprecate */
 
 /*----- CCSDS Endian Flag in the APID Qualifier Field. -----*/
 #define CCSDS_BIG_ENDIAN 0

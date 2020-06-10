@@ -81,16 +81,4 @@ void CFE_MSG_SetDefaultCCSDSPri(CFE_MSG_Message_t *MsgPtr);
  */
 void CFE_MSG_SetDefaultCCSDSExt(CFE_MSG_Message_t *MsgPtr);
 
-/*****************************************************************************/
-/**
- * \brief Initialize default header - implemented based on selected header format
- *
- * \par DESCRIPTION
- *     Sets the constant defaults for the entire header. Internal function
- *     assumes pointer is valid.
- *
- * \param[out]     MsgPtr  Message to set
- */
-void CFE_MSG_InitDefaultHdr(CFE_MSG_Message_t *MsgPtr);
-
 #endif /* _cfe_msg_default_ */

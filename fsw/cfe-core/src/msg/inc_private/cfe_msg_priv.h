@@ -79,4 +79,16 @@ static inline void CFE_MSG_SetHeaderField(uint8 *Word, uint16 Val, uint16 Mask)
     Word[1] = ((Word[1] & ~Mask) | (Val & Mask)) & 0xFF;
 }
 
+/*****************************************************************************/
+/**
+ * \brief Initialize default header - implemented based on selected header format
+ *
+ * \par DESCRIPTION
+ *     Sets the constant defaults for the entire header. Internal function
+ *     assumes pointer is valid.
+ *
+ * \param[out]     MsgPtr  Message to set
+ */
+void CFE_MSG_InitDefaultHdr(CFE_MSG_Message_t *MsgPtr);
+
 #endif /* _cfe_msg_priv_ */
