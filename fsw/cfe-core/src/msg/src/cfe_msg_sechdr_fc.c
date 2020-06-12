@@ -61,7 +61,7 @@ int32 CFE_MSG_GetFcnCode(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_FcnCode_t *Fcn
  * Set function code - See API and header file for details
  * cFS default secondary header implementation
  */
-int32 CFE_MSG_SetFcnCode(CFE_MSG_Message_t *MsgPtr, uint16 FcnCode)
+int32 CFE_MSG_SetFcnCode(CFE_MSG_Message_t *MsgPtr, CFE_MSG_FcnCode_t FcnCode)
 {
     uint32                   status;
     CFE_MSG_Type_t           type;
