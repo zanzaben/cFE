@@ -915,6 +915,8 @@ bool CFE_SB_ValidateChecksum(CFE_SB_MsgPtr_t MsgPtr)
     return (bool) status;
 }
 
+// TODO remove
+#if 0 
 void *CFE_SB_GetUserData(CFE_SB_MsgPtr_t MsgPtr)
 {
     UT_Stub_RegisterContextGenericArg(UT_KEY(CFE_SB_GetUserData), MsgPtr);
@@ -942,6 +944,7 @@ void *CFE_SB_GetUserData(CFE_SB_MsgPtr_t MsgPtr)
 
     return Result;
 }
+#endif
 
 void CFE_SB_SetTotalMsgLength (CFE_SB_MsgPtr_t MsgPtr,uint16 TotalLength)
 {
