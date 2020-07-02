@@ -48,11 +48,7 @@ function(initialize_globals)
   unset(VARNAME)
   unset(PARENTVARS)
   set(MISSION_IMPORTED_VARS ${MISSION_IMPORTED_VARS} PARENT_SCOPE)
-
-  # Default core modules, set early so it can be appended or replaced from user configuration
-  # NOT cached so it can be changed with simple config update
-  set(MISSION_CORE_MODULES msg PARENT_SCOPE)
-
+    
 endfunction(initialize_globals)
 
 

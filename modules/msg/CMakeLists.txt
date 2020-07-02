@@ -34,15 +34,8 @@ else (MISSION_INCLUDE_CCSDSEXT_HEADER)
         src/cfe_msg_initdefaulthdr_v1.c)
 endif (MISSION_INCLUDE_CCSDSEXT_HEADER)
 
-# Interface library (link to get public includes)
-add_library(${MODULE_NAME}_interface INTERFACE)
-target_include_directories(${MODULE_NAME}_interface INTERFACE inc_public)
-
 # Module library
-add_library(${MODULE_NAME} STATIC ${MODULE_SRCS})
-
-# Link to get public includes
-target_link_libraries(${MODULE_NAME} ${MODULE_NAME}_interface)
+add_library(${DEP} STATIC ${MODULE_SRCS})
 
 # Add private include
-target_include_directories(${MODULE_NAME} PRIVATE inc_private)
+target_include_directories(${DEP} PRIVATE private_inc)
