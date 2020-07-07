@@ -21,12 +21,6 @@ include_directories(
       ${cfe-core_MISSION_DIR}/src/fs
 )
 
-# Also include the core module public includes for now TODO cleanup
-foreach(MODULE ${MISSION_CORE_MODULES})
-  get_filename_component(MODULE_NAME ${MODULE} NAME)
-  include_directories($<TARGET_PROPERTY:${MODULE_NAME},INTERFACE_INCLUDE_DIRECTORIES>)
-endforeach(MODULE ${MISSION_CORE_MODULES})
-
 # CFE needs a supplemental test support hook library
 add_library(ut_cfe-core_support STATIC
     ut_support.c
@@ -72,9 +66,11 @@ foreach(MODULE ${CFE_CORE_MODULES})
         ${UT_COVERAGE_LINK_FLAGS}
         ut_cfe-core_support
         ut_cfe-core_stubs
-        ut_assert
-#        mission_msg)  #TODO short term... will stub out eventually
-        msg)
+        ut_assert)
+
+  # TODO short term hack for testing with new code
+  target_link_libraries(${UT_TARGET_NAME}_UT msg)
+  #target_link_libraries(${UT_TARGET_NAME}_UT mission_msg)
     
   add_test(${UT_TARGET_NAME}_UT ${UT_TARGET_NAME}_UT)
   install(TARGETS ${UT_TARGET_NAME}_UT DESTINATION ${TGTNAME}/${UT_INSTALL_SUBDIR})
