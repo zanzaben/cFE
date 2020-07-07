@@ -106,7 +106,6 @@
  * \defgroup CFESBPktTypeDefs cFE SB Packet Type Defines
  * \{
  */
-// TODO deprecate these, replace with CFE_MSG_MsgType_Cmd/tlm/invalid
 #define CFE_SB_PKTTYPE_INVALID          0      /**< \brief #CFE_SB_GetPktType response if message type can not be determined */
 #define CFE_SB_PKTTYPE_CMD              1      /**< \brief #CFE_SB_GetPktType response for command packets */
 #define CFE_SB_PKTTYPE_TLM              2      /**< \brief #CFE_SB_GetPktType response for telemetry packets */
@@ -147,37 +146,10 @@
 ** Type Definitions
 */
 
-#ifndef CFE_OMIT_DEPRECATED_6_8
-
-typedef CFE_MSG_Message_t         CFE_SB_Msg_t;      /**< \brief Old style, member names won't match */
-typedef CFE_MSG_CommandHeader_t   CFE_SB_CmdHdr_t;   /**< \brief Old sytle, member names won't match */
-typedef CFE_MSG_TelemetryHeader_t CFE_SB_TlmHdr_t; /**< \brief Old style, member names won't match */
-
-#endif /* CFE_OMIT_DEPRECATED_6_8 */
-
-#if 0
-    /** TODO Remove, confirm cleaned up... */
-    /** \brief Generic Software Bus Message Type Definition */
-    typedef union {
-        CCSDS_PriHdr_t      Hdr;   /**< \brief CCSDS Primary Header #CCSDS_PriHdr_t */
-        CCSDS_SpacePacket_t SpacePacket_wwwwaaaa;
-        uint64              LongLong; /**< \brief Forces minimum of 64-bit alignment for this object */
-        uint8               Byte[sizeof(CCSDS_PriHdr_t)];   /**< \brief Allows byte-level access */
-    }CFE_SB_Msg_t;
-#endif
-
-
-/** \brief Generic Software Bus Command Header Type Definition */
-//typedef union {
-//    CCSDS_CommandPacket_t   Cmd;
-//    CFE_SB_Msg_t            BaseMsg; /**< Base type (primary header) */
-//} CFE_SB_CmdHdr_t;
-
-/** \brief Generic Software Bus Telemetry Header Type Definition */
-//typedef union {
-//    CCSDS_TelemetryPacket_t Tlm;
-//    CFE_SB_Msg_t            BaseMsg; /**< Base type (primary header) */
-//} CFE_SB_TlmHdr_t;
+/* Old SB scope typedefs will eventually be deprecated, but high impact */
+typedef CFE_MSG_Message_t         CFE_SB_Msg_t;      /**< \brief Old scope typedefs, old member names might not match */
+typedef CFE_MSG_CommandHeader_t   CFE_SB_CmdHdr_t;   /**< \brief Old scope typedefs, old member names might not match */
+typedef CFE_MSG_TelemetryHeader_t CFE_SB_TlmHdr_t;   /**< \brief Old scope typedefs, old member names might not match */
 
 #define CFE_SB_CMD_HDR_SIZE     (sizeof(CFE_SB_CmdHdr_t))/**< \brief Size of #CFE_SB_CmdHdr_t in bytes */
 #define CFE_SB_TLM_HDR_SIZE     (sizeof(CFE_SB_TlmHdr_t))/**< \brief Size of #CFE_SB_TlmHdr_t in bytes */
@@ -196,14 +168,11 @@ typedef uint32 CFE_SB_TimeOut_t;
 */
 typedef uint8  CFE_SB_PipeId_t;
 
-#ifndef CFE_OMIT_DEPRECATED_6_8
 /** \brief  CFE_SB_MsgPtr_t defined as a pointer to an SB Message */
 typedef CFE_SB_Msg_t *CFE_SB_MsgPtr_t;
-#endif
 
 /** \brief  CFE_SB_MsgPayloadPtr_t defined as an opaque pointer to a message Payload portion */
-// TODO remove, use byte access?
-//typedef uint8 *CFE_SB_MsgPayloadPtr_t;
+typedef uint8 *CFE_SB_MsgPayloadPtr_t;
 
 /** \brief  CFE_SB_ZeroCopyHandle_t to primitive type definition
 **
@@ -1448,6 +1417,7 @@ static inline CFE_SB_MsgId_t CFE_SB_ValueToMsgId(CFE_SB_MsgId_Atom_t MsgIdValue)
 /*****************************************************************************/
 /**
  * \brief Identifies packet type given message ID
+
  *
  * Provides the packet type associated with the given message ID
  *
