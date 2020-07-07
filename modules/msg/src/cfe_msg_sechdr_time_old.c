@@ -53,7 +53,7 @@ int32 CFE_MSG_SetMsgTime(CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t NewTime)
     CFE_MSG_GetHasSecondaryHeader(MsgPtr, &hassechdr);
 
     status = CFE_MSG_GetType(MsgPtr, &type);
-    if (status != CFE_SUCCESS || type != CFE_MSG_Type_Cmd || !hassechdr)
+    if (status != CFE_SUCCESS || type != CFE_MSG_Type_Tlm || !hassechdr)
     {
         return CFE_MSG_WRONG_MSG_TYPE;
     }
@@ -106,7 +106,7 @@ int32 CFE_MSG_GetMsgTime(const CFE_MSG_Message_t *MsgPtr, CFE_TIME_SysTime_t *Ti
     CFE_MSG_GetHasSecondaryHeader(MsgPtr, &hassechdr);
 
     status = CFE_MSG_GetType(MsgPtr, &type);
-    if (status != CFE_SUCCESS || type != CFE_MSG_Type_Cmd || !hassechdr)
+    if (status != CFE_SUCCESS || type != CFE_MSG_Type_Tlm || !hassechdr)
     {
         memset(Time, 0, sizeof(*Time));
         return CFE_MSG_WRONG_MSG_TYPE;
