@@ -90,7 +90,6 @@
 #include "osapi.h"
 #include "cfe_error.h"
 #include "cfe_sb_priv.h"
-#include "cfe_sb_msg_id_util.h"
 #include "cfe_msg_api.h"
 
 
@@ -118,7 +117,6 @@ CFE_SB_MsgKey_t CFE_SB_ConvertMsgIdtoMsgKey( CFE_SB_MsgId_t MsgId)
 
 /*
  * Function: CFE_SB_GetMsgId - See API and header file for details
- * TODO deprecate
  */
 CFE_SB_MsgId_t CFE_SB_GetMsgId(const CFE_SB_Msg_t *MsgPtr)
 {
@@ -134,7 +132,6 @@ CFE_SB_MsgId_t CFE_SB_GetMsgId(const CFE_SB_Msg_t *MsgPtr)
 
 /*
  * Function: CFE_SB_SetMsgId - See API and header file for details
- * TODO deprecate
  */
 void CFE_SB_SetMsgId(CFE_SB_MsgPtr_t MsgPtr,
                      CFE_SB_MsgId_t MsgId)
@@ -143,33 +140,6 @@ void CFE_SB_SetMsgId(CFE_SB_MsgPtr_t MsgPtr,
   /* Ignore return, no alternate action */
   CFE_MSG_SetMsgId(MsgPtr, MsgId);
 
-#ifdef MESSAGE_FORMAT_IS_CCSDS_VER_2
-  /* TODO Side effects likely undesireable from a mission perspective since
-   * they may be used for other purposes. Just because they aren't 
-   * used in MsgId doesn't mean they aren't used
-   *
-   * If this behavior is a requirement, then will fix these
-   */
-
-#if 0
-  CCSDS_WR_VERS(MsgPtr->SpacePacket.Hdr, 1);
-
-  CCSDS_WR_APID(MsgPtr->SpacePacket.Hdr, CFE_SB_RD_APID_FROM_MSGID(MsgIdVal) );
-  
-  CCSDS_CLR_SEC_APIDQ(MsgPtr->SpacePacket.ApidQ);
-  
-  CCSDS_WR_EDS_VER(MsgPtr->SpacePacket.ApidQ, 1);
-  
-  CCSDS_WR_ENDIAN(MsgPtr->SpacePacket.ApidQ, CFE_PLATFORM_ENDIAN);
-  
-  CCSDS_WR_PLAYBACK(MsgPtr->SpacePacket.ApidQ, false);
-  
-  CCSDS_WR_SUBSYSTEM_ID(MsgPtr->SpacePacket.ApidQ, CFE_SB_RD_SUBSYS_ID_FROM_MSGID(MsgIdVal));
-  
-  CCSDS_WR_SYSTEM_ID(MsgPtr->SpacePacket.ApidQ, CFE_MISSION_SPACECRAFT_ID);
-#endif
-
-#endif 
 }/* end CFE_SB_SetMsgId */
 
 /*
