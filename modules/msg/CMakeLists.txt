@@ -14,7 +14,7 @@
 ##################################################################
 
 # Add the basic set of files which are always built
-set(MODULE_SRCS
+set(${DEP}_SRC
     src/cfe_msg_ccsdspri.c
     src/cfe_msg_init.c
     src/cfe_msg_msgid_shared.c
@@ -26,16 +26,16 @@ set(MODULE_SRCS
 
 # Source selection for if CCSDS extended header is included
 if (MISSION_INCLUDE_CCSDSEXT_HEADER)
-    list(APPEND MODULE_SRCS
+    list(APPEND ${DEP}_SRC
         src/cfe_msg_ccsdsext.c
         src/cfe_msg_initdefaulthdr_v2.c)
 else (MISSION_INCLUDE_CCSDSEXT_HEADER)
-    list(APPEND MODULE_SRCS
+    list(APPEND ${DEP}_SRC
         src/cfe_msg_initdefaulthdr_v1.c)
 endif (MISSION_INCLUDE_CCSDSEXT_HEADER)
 
 # Module library
-add_library(${DEP} STATIC ${MODULE_SRCS})
+add_library(${DEP} STATIC ${${DEP}_SRC})
 
 # Add private include
 target_include_directories(${DEP} PRIVATE private_inc)

@@ -235,8 +235,8 @@ int32 CFE_SB_SetCmdCode(CFE_SB_MsgPtr_t MsgPtr,
 uint16 CFE_SB_GetChecksum(CFE_SB_MsgPtr_t MsgPtr)
 {
 
-    CFE_MSG_Type_t       type = CFE_MSG_Type_Invalid;
-    bool                 hassechdr = false;
+    CFE_MSG_Type_t type = CFE_MSG_Type_Invalid;
+    bool           hassechdr = false;
 
     CFE_MSG_GetHasSecondaryHeader(MsgPtr, &hassechdr);
     CFE_MSG_GetType(MsgPtr, &type);
@@ -247,7 +247,8 @@ uint16 CFE_SB_GetChecksum(CFE_SB_MsgPtr_t MsgPtr)
         return 0;
     }/* end if */
 
-    return ((CFE_MSG_CommandHeader_t*)MsgPtr)->Sec.Checksum;
+    /* Byte access for now to avoid error if secondary doesn't contain checksum */
+    return MsgPtr->Byte[sizeof(CCSDS_SpacePacket_t) + 1];
 
 }/* end CFE_SB_GetChecksum */
 
