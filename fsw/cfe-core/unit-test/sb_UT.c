@@ -2664,24 +2664,26 @@ void Test_SendMsg_BasicSend(void)
 */
 void Test_SendMsg_SequenceCount(void)
 {
-    CFE_SB_PipeId_t  PipeId;
-    CFE_SB_MsgId_t   MsgId = SB_UT_TLM_MID;
-    CFE_SB_MsgPtr_t  PtrToMsg;
-    SB_UT_Test_Tlm_t TlmPkt;
-    CFE_SB_MsgPtr_t  TlmPktPtr = (CFE_SB_MsgPtr_t) &TlmPkt;
-    uint32           PipeDepth = 10;
+    CFE_SB_PipeId_t         PipeId;
+    CFE_SB_MsgId_t          MsgId = SB_UT_TLM_MID;
+    CFE_SB_MsgPtr_t         PtrToMsg;
+    SB_UT_Test_Tlm_t        TlmPkt;
+    CFE_SB_MsgPtr_t         TlmPktPtr = (CFE_SB_MsgPtr_t) &TlmPkt;
+    uint32                  PipeDepth = 10;
+    CFE_MSG_SequenceCount_t SeqCnt;
 
     SETUP(CFE_SB_CreatePipe(&PipeId, PipeDepth, "SeqCntTestPipe"));
     CFE_SB_InitMsg(&TlmPkt, MsgId, sizeof(TlmPkt), true);
     SETUP(CFE_SB_Subscribe(MsgId, PipeId));
-/*    CCSDS_WR_SEQ(TlmPktPtr->Hdr, 22); TODO fix... this doesn't work */
+    CFE_MSG_SetSequenceCount(TlmPktPtr, 22);
     SETUP(CFE_SB_SendMsg(TlmPktPtr));
 
     ASSERT(CFE_SB_RcvMsg(&PtrToMsg, PipeId, CFE_SB_PEND_FOREVER));
 
     ASSERT_TRUE(PtrToMsg != NULL);
 
-/*    ASSERT_TRUE(CCSDS_RD_SEQ(PtrToMsg->Hdr) == 1); TODO fix */
+    CFE_MSG_GetSequenceCount(PtrToMsg, &SeqCnt);
+    ASSERT_EQ(SeqCnt, 1);
 
     ASSERT(CFE_SB_PassMsg(TlmPktPtr));
 
@@ -2689,7 +2691,8 @@ void Test_SendMsg_SequenceCount(void)
 
     ASSERT_TRUE(PtrToMsg != NULL);
 
-/*    ASSERT_TRUE(CCSDS_RD_SEQ(PtrToMsg->Hdr) == 22); TODO fix */
+    CFE_MSG_GetSequenceCount(PtrToMsg, &SeqCnt);
+    ASSERT_EQ(SeqCnt, 22);
 
     ASSERT(CFE_SB_SendMsg(TlmPktPtr));
 
@@ -2697,7 +2700,8 @@ void Test_SendMsg_SequenceCount(void)
 
     ASSERT_TRUE(PtrToMsg != NULL);
 
-/*    ASSERT_TRUE(CCSDS_RD_SEQ(PtrToMsg->Hdr) == 2); TODO fix */
+    CFE_MSG_GetSequenceCount(PtrToMsg, &SeqCnt);
+    ASSERT_EQ(SeqCnt, 2);
 
     EVTCNT(3);
 
@@ -2713,7 +2717,8 @@ void Test_SendMsg_SequenceCount(void)
 
     SETUP(CFE_SB_RcvMsg(&PtrToMsg, PipeId, CFE_SB_PEND_FOREVER));
 
-/*    ASSERT_EQ(CCSDS_RD_SEQ(PtrToMsg->Hdr), 4); TODO fix */
+    CFE_MSG_GetSequenceCount(PtrToMsg, &SeqCnt);
+    ASSERT_EQ(SeqCnt, 4);
 
     TEARDOWN(CFE_SB_DeletePipe(PipeId));
 
@@ -2900,6 +2905,7 @@ void Test_SendMsg_ZeroCopySend(void)
     CFE_SB_MsgPtr_t         ZeroCpyMsgPtr = NULL;
     uint32                  PipeDepth = 10;
     CFE_SB_ZeroCopyHandle_t ZeroCpyBufHndl = 0;
+    CFE_MSG_SequenceCount_t SeqCnt;
 
     SETUP(CFE_SB_CreatePipe(&PipeId, PipeDepth, "ZeroCpyTestPipe"));
 
@@ -2913,7 +2919,7 @@ void Test_SendMsg_ZeroCopySend(void)
     else
     {
         CFE_SB_InitMsg(ZeroCpyMsgPtr, MsgId, sizeof(SB_UT_Test_Tlm_t), true);
-/*        CCSDS_WR_SEQ(ZeroCpyMsgPtr->Hdr, 22);  TODO fix, this doesn't work */
+        CFE_MSG_SetSequenceCount(ZeroCpyMsgPtr, 22);
     }
 
     /* Test response to a get pool information error */
@@ -2927,7 +2933,8 @@ void Test_SendMsg_ZeroCopySend(void)
 
     ASSERT_TRUE(PtrToMsg != NULL);
 
-/*    ASSERT_EQ(CCSDS_RD_SEQ(PtrToMsg->Hdr), 1); */
+    CFE_MSG_GetSequenceCount(PtrToMsg, &SeqCnt);
+    ASSERT_EQ(SeqCnt, 1);
 
     EVTCNT(3);
 
@@ -2949,7 +2956,8 @@ void Test_SendMsg_ZeroCopyPass(void)
     CFE_SB_MsgPtr_t         ZeroCpyMsgPtr = NULL;
     uint32                  PipeDepth = 10;
     CFE_SB_ZeroCopyHandle_t ZeroCpyBufHndl = 0;
-/*    uint16                  Seq = 22; TODO fix */
+    CFE_MSG_SequenceCount_t ExpectedSeqCnt = 22;
+    CFE_MSG_SequenceCount_t ActualSeqCnt;
 
     SETUP(CFE_SB_CreatePipe(&PipeId, PipeDepth, "ZeroCpyPassTestPipe"));
     SETUP(CFE_SB_Subscribe(MsgId, PipeId));
@@ -2964,7 +2972,7 @@ void Test_SendMsg_ZeroCopyPass(void)
     else
     {
       CFE_SB_InitMsg(ZeroCpyMsgPtr, MsgId, sizeof(SB_UT_Test_Tlm_t), true);
-/*      CCSDS_WR_SEQ(ZeroCpyMsgPtr->Hdr, Seq); TODO fix, this doesn't work */
+      CFE_MSG_SetSequenceCount(ZeroCpyMsgPtr, ExpectedSeqCnt);
     }
 
     /* Test response to a get pool information error */
@@ -2983,11 +2991,11 @@ void Test_SendMsg_ZeroCopyPass(void)
     {
         UtAssert_Failed("Unexpected NULL return from receive in zero copy pass test");
     }
-/*    else
+    else
     {
-        UtAssert_True(CCSDS_RD_SEQ(PtrToMsg->Hdr) == Seq, "sequence count for send in sequence count test, exp=%d, act=%d",
-                 Seq, CCSDS_RD_SEQ(PtrToMsg->Hdr));
-    } TODO fix */
+        CFE_MSG_GetSequenceCount(PtrToMsg, &ActualSeqCnt);
+        ASSERT_EQ(ExpectedSeqCnt, ActualSeqCnt);
+    }
 
     EVTCNT(3);
 

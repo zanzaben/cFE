@@ -82,7 +82,7 @@ int32 CFE_MSG_GetHeaderVersion(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_HeaderVe
 int32 CFE_MSG_SetHeaderVersion(CFE_MSG_Message_t *MsgPtr, CFE_MSG_HeaderVersion_t Version)
 {
     Version <<= CFE_MSG_CCSDSVER_SHIFT;
-    if (MsgPtr == NULL || ((Version & CFE_MSG_CCSDSVER_MASK) != 0))
+    if (MsgPtr == NULL || ((Version & ~CFE_MSG_CCSDSVER_MASK) != 0))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -196,7 +196,7 @@ int32 CFE_MSG_GetApId(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_ApId_t *ApId)
  */
 int32 CFE_MSG_SetApId(CFE_MSG_Message_t *MsgPtr, CFE_MSG_ApId_t ApId)
 {
-    if (MsgPtr == NULL || ((ApId & CFE_MSG_APID_MASK) != 0))
+    if (MsgPtr == NULL || ((ApId & ~CFE_MSG_APID_MASK) != 0))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -301,7 +301,7 @@ int32 CFE_MSG_GetSequenceCount(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Sequence
  */
 int32 CFE_MSG_SetSequenceCount(CFE_MSG_Message_t *MsgPtr, CFE_MSG_SequenceCount_t SeqCnt)
 {
-    if (MsgPtr == NULL || ((SeqCnt & CFE_MSG_SEQCNT_MASK) != 0))
+    if (MsgPtr == NULL || ((SeqCnt & ~CFE_MSG_SEQCNT_MASK) != 0))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }

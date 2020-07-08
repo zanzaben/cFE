@@ -77,7 +77,7 @@ int32 CFE_MSG_GetEDSVersion(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_
 int32 CFE_MSG_SetEDSVersion(CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t Version)
 {
     Version <<= CFE_MSG_EDSVER_SHIFT;
-    if (MsgPtr == NULL || ((Version & CFE_MSG_EDSVER_MASK) != 0))
+    if (MsgPtr == NULL || ((Version & ~CFE_MSG_EDSVER_MASK) != 0))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -198,7 +198,7 @@ int32 CFE_MSG_GetSubsystem(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t 
  */
 int32 CFE_MSG_SetSubsystem(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Subsystem_t Subsystem)
 {
-    if (MsgPtr == NULL || ((Subsystem & CFE_MSG_SUBSYS_MASK) != 0))
+    if (MsgPtr == NULL || ((Subsystem & ~CFE_MSG_SUBSYS_MASK) != 0))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
