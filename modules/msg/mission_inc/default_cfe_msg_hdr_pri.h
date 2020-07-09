@@ -46,20 +46,11 @@
  * an open source standard.
  */
 
-/* TODO recommand a msg/inc_public_v1 and 2 version of this file,
- * create an interface library (header only)
- * use cmake target_include_directories and inherit dependencies
- * to avoid the ifdef here, requires rework of how includes are
- * inherited for libs (just link the interface library)
- */
 /**
  * \brief Full CCSDS header
  */
 typedef struct{
     CCSDS_PrimaryHeader_t Pri;  /**< \brief CCSDS Primary Header */
-#ifdef MESSAGE_FORMAT_IS_CCSDS_VER_2
-    CCSDS_ExtendedHeader_t Ext;  /**< \brief CCSDS Extended Header */
-#endif
 } CCSDS_SpacePacket_t;
 
 /**
