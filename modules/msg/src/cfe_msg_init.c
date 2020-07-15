@@ -32,6 +32,8 @@
 int32 CFE_MSG_Init(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId, CFE_MSG_Size_t Size, bool Clear)
 {
 
+    int32 status;
+
     if (MsgPtr == NULL)
     {
         return CFE_MSG_BAD_ARGUMENT;
@@ -44,9 +46,12 @@ int32 CFE_MSG_Init(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId, CFE_MSG_Size
         CFE_MSG_InitDefaultHdr(MsgPtr);
     }
 
-    /* Only set bits impacted by input */
-    CFE_MSG_SetMsgId(MsgPtr, MsgId);
-    CFE_MSG_SetSize(MsgPtr, Size);
+    /* Set values input */
+    status = CFE_MSG_SetMsgId(MsgPtr, MsgId);
+    if (status == CFE_SUCCESS) 
+    {
+        status = CFE_MSG_SetSize(MsgPtr, Size);
+    }
 
-    return CFE_SUCCESS;
+    return status;
 }

@@ -19,7 +19,7 @@
 */
 
 /******************************************************************************
- * Message CCSDS extended header initializations
+ * Message CCSDS extended header implementations
  */
 #include "cfe_msg_api.h"
 #include "cfe_msg_priv.h"
@@ -29,9 +29,7 @@
 /* CCSDS Extended definitions */
 #define CFE_MSG_EDSVER_SHIFT   11     /**< \brief CCSDS EDS version shift */
 #define CFE_MSG_EDSVER_MASK    0xF800 /**< \brief CCSDS EDS version mask */
-#define CFE_MSG_ENDIAN_SHIFT   10     /**< \brief CCSDS endian shift */
 #define CFE_MSG_ENDIAN_MASK    0x0400 /**< \brief CCSDS endiam mask, little endian when set */
-#define CFE_MSG_PLAYBACK_SHIFT 9      /**< \brief CCSDS playback shift */
 #define CFE_MSG_PLAYBACK_MASK  0x0200 /**< \brief CCSDS playback flag, playback when set */
 #define CFE_MSG_SUBSYS_MASK    0x01FF /**< \brief CCSDS Subsystem mask */
 
