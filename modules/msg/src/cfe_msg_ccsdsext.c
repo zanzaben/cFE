@@ -74,13 +74,12 @@ int32 CFE_MSG_GetEDSVersion(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_
  */
 int32 CFE_MSG_SetEDSVersion(CFE_MSG_Message_t *MsgPtr, CFE_MSG_EDSVersion_t Version)
 {
-    Version <<= CFE_MSG_EDSVER_SHIFT;
-    if (MsgPtr == NULL || ((Version & ~CFE_MSG_EDSVER_MASK) != 0))
+    if (MsgPtr == NULL || (Version > (CFE_MSG_EDSVER_MASK >> CFE_MSG_EDSVER_SHIFT)))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Ext.Subsystem, Version, CFE_MSG_EDSVER_MASK);
+    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Ext.Subsystem, Version << CFE_MSG_EDSVER_SHIFT, CFE_MSG_EDSVER_MASK);
 
     return CFE_SUCCESS;
 }
@@ -113,7 +112,9 @@ int32 CFE_MSG_GetEndian(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t *Endia
  */
 int32 CFE_MSG_SetEndian(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t Endian)
 {
-    if (MsgPtr == NULL || Endian == CFE_MSG_Endian_Invalid)
+    int32 status = CFE_SUCCESS;
+
+    if (MsgPtr == NULL)
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -122,12 +123,16 @@ int32 CFE_MSG_SetEndian(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Endian_t Endian)
     {
         MsgPtr->CCSDS.Ext.Subsystem[0] |= CFE_MSG_ENDIAN_MASK >> 8;
     }
-    else
+    else if (Endian == CFE_MSG_Endian_Big)
     {
         MsgPtr->CCSDS.Ext.Subsystem[0] &= ~(CFE_MSG_ENDIAN_MASK >> 8);
     }
+    else
+    {
+        status = CFE_MSG_BAD_ARGUMENT;
+    }
 
-    return CFE_SUCCESS;
+    return status;
 }
 
 /******************************************************************************
@@ -158,7 +163,9 @@ int32 CFE_MSG_GetPlaybackFlag(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_PlaybackF
  */
 int32 CFE_MSG_SetPlaybackFlag(CFE_MSG_Message_t *MsgPtr, CFE_MSG_PlaybackFlag_t PlayFlag)
 {
-    if (MsgPtr == NULL || PlayFlag == CFE_MSG_PlayFlag_Invalid)
+    int32 status = CFE_SUCCESS;
+
+    if (MsgPtr == NULL)
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -167,12 +174,16 @@ int32 CFE_MSG_SetPlaybackFlag(CFE_MSG_Message_t *MsgPtr, CFE_MSG_PlaybackFlag_t 
     {
         MsgPtr->CCSDS.Ext.Subsystem[0] |= CFE_MSG_PLAYBACK_MASK >> 8;
     }
-    else
+    else if (PlayFlag == CFE_MSG_PlayFlag_Original)
     {
         MsgPtr->CCSDS.Ext.Subsystem[0] &= ~(CFE_MSG_PLAYBACK_MASK >> 8);
     }
+    else
+    {
+        status = CFE_MSG_BAD_ARGUMENT;
+    }
 
-    return CFE_SUCCESS;
+    return status;
 }
 
 /******************************************************************************

@@ -81,13 +81,12 @@ int32 CFE_MSG_GetHeaderVersion(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_HeaderVe
  */
 int32 CFE_MSG_SetHeaderVersion(CFE_MSG_Message_t *MsgPtr, CFE_MSG_HeaderVersion_t Version)
 {
-    Version <<= CFE_MSG_CCSDSVER_SHIFT;
-    if (MsgPtr == NULL || ((Version & ~CFE_MSG_CCSDSVER_MASK) != 0))
+    if (MsgPtr == NULL || (Version > (CFE_MSG_CCSDSVER_MASK >> CFE_MSG_CCSDSVER_SHIFT)))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
 
-    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Pri.StreamId, Version, CFE_MSG_CCSDSVER_MASK);
+    CFE_MSG_SetHeaderField(MsgPtr->CCSDS.Pri.StreamId, Version << CFE_MSG_CCSDSVER_SHIFT, CFE_MSG_CCSDSVER_MASK);
 
     return CFE_SUCCESS;
 }
@@ -120,7 +119,9 @@ int32 CFE_MSG_GetType(const CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t *Type)
  */
 int32 CFE_MSG_SetType(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t Type)
 {
-    if (MsgPtr == NULL || Type == CFE_MSG_Type_Invalid)
+    int32 status = CFE_SUCCESS;
+
+    if (MsgPtr == NULL)
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
@@ -129,12 +130,16 @@ int32 CFE_MSG_SetType(CFE_MSG_Message_t *MsgPtr, CFE_MSG_Type_t Type)
     {
         MsgPtr->CCSDS.Pri.StreamId[0] |= CFE_MSG_TYPE_MASK >> 8;
     }
-    else
+    else if (Type == CFE_MSG_Type_Tlm)
     {
         MsgPtr->CCSDS.Pri.StreamId[0] &= ~(CFE_MSG_TYPE_MASK >> 8);
     }
+    else
+    {
+        status = CFE_MSG_BAD_ARGUMENT;
+    }
 
-    return CFE_SUCCESS;
+    return status;
 }
 
 /******************************************************************************
