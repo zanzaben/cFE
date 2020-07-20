@@ -25,7 +25,7 @@
  *     Provide version identifiers for the cFE core.
  */
 
-/*
+/**
  * \page cfeversion Version Numbers
  *
  * <H2> Version Number Semantics </H2>
