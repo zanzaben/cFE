@@ -68,7 +68,7 @@ int32 CFE_MSG_SetFcnCode(CFE_MSG_Message_t *MsgPtr, CFE_MSG_FcnCode_t FcnCode)
     bool                     hassechdr = false;
     CFE_MSG_CommandHeader_t *cmd       = (CFE_MSG_CommandHeader_t *)MsgPtr;
 
-    if (MsgPtr == NULL || ((FcnCode & ~CFE_MSG_FC_MASK) != 0))
+    if (MsgPtr == NULL || (FcnCode > CFE_MSG_FC_MASK))
     {
         return CFE_MSG_BAD_ARGUMENT;
     }

@@ -40,6 +40,7 @@
 #include "cfe_msg_api.h"
 #include "cfe_msg_priv.h"
 #include "cfe_error.h"
+#include "cfe_platform_cfg.h"
 
 /* cFS MsgId definitions */
 #define CFE_MSG_MSGID_APID_MASK   0x007F /**< \brief CCSDS ApId mask for MsgId */
@@ -84,7 +85,7 @@ int32 CFE_MSG_SetMsgId(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId)
 
     CFE_SB_MsgId_Atom_t msgidval = CFE_SB_MsgIdToValue(MsgId);
 
-    if (MsgPtr == NULL)
+    if (MsgPtr == NULL || msgidval > CFE_PLATFORM_SB_HIGHEST_VALID_MSGID) 
     {
         return CFE_MSG_BAD_ARGUMENT;
     }
