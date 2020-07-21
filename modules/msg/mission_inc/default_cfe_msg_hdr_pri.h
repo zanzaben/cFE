@@ -49,37 +49,41 @@
 /**
  * \brief Full CCSDS header
  */
-typedef struct{
-    CCSDS_PrimaryHeader_t Pri;  /**< \brief CCSDS Primary Header */
+typedef struct
+{
+    CCSDS_PrimaryHeader_t Pri; /**< \brief CCSDS Primary Header */
 } CCSDS_SpacePacket_t;
 
 /**
  * \brief cFS command header
  */
-typedef struct {
+typedef struct
+{
 
-    CCSDS_SpacePacket_t CCSDS; /**< \brief CCSDS header */
-    CFE_MSG_CommandSecondaryHeader_t Sec;  /**< \brief Secondary header */
+    CCSDS_SpacePacket_t              CCSDS; /**< \brief CCSDS header */
+    CFE_MSG_CommandSecondaryHeader_t Sec;   /**< \brief Secondary header */
 
-}  CFE_MSG_CommandHeader_t;
+} CFE_MSG_CommandHeader_t;
 
 /**
  * \brief cFS telemetry header
  */
-typedef struct {
+typedef struct
+{
 
-    CCSDS_SpacePacket_t CCSDS; /**< \brief CCSDS header */
-    CFE_MSG_TelemetrySecondaryHeader_t Sec;  /**< \brief Secondary header */
+    CCSDS_SpacePacket_t                CCSDS; /**< \brief CCSDS header */
+    CFE_MSG_TelemetrySecondaryHeader_t Sec;   /**< \brief Secondary header */
 
 } CFE_MSG_TelemetryHeader_t;
 
 /**
  * \brief cFS Generic packet header
  */
-typedef union {
-    CCSDS_SpacePacket_t       CCSDS;    /**< \brief CCSDS Header (Pri or Pri + Ext) */
-    uint64                    LongLong; /**< \brief Force 64-bit alignment */
-    uint8                     Byte[sizeof(CCSDS_SpacePacket_t)];   /**< \brief Byte level access */
+typedef union
+{
+    CCSDS_SpacePacket_t CCSDS;                             /**< \brief CCSDS Header (Pri or Pri + Ext) */
+    uint64              LongLong;                          /**< \brief Force 64-bit alignment */
+    uint8               Byte[sizeof(CCSDS_SpacePacket_t)]; /**< \brief Byte level access */
 } CFE_MSG_Message_t;
 
-#endif  /* _cfe_msg_hdr_ */
+#endif /* _cfe_msg_hdr_ */

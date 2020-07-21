@@ -168,7 +168,7 @@ void Test_MSG_Type(void)
 void Test_MSG_HeaderVersion(void)
 {
     CFE_MSG_Message_t       msg;
-    CFE_MSG_HeaderVersion_t input[] = {0, TEST_CCSDSVER_MAX/2, TEST_CCSDSVER_MAX};
+    CFE_MSG_HeaderVersion_t input[] = {0, TEST_CCSDSVER_MAX / 2, TEST_CCSDSVER_MAX};
     CFE_MSG_HeaderVersion_t actual  = TEST_CCSDSVER_MAX;
     int                     i;
 
@@ -228,7 +228,7 @@ void Test_MSG_HeaderVersion(void)
 void Test_MSG_HasSecondaryHeader(void)
 {
     CFE_MSG_Message_t msg;
-    bool              actual  = true;
+    bool              actual = true;
 
     UT_Text("Bad parameter tests, Null pointers");
     memset(&msg, 0, sizeof(msg));
@@ -276,7 +276,7 @@ void Test_MSG_HasSecondaryHeader(void)
 void Test_MSG_ApId(void)
 {
     CFE_MSG_Message_t msg;
-    CFE_MSG_ApId_t    input[] = {0, TEST_APID_MAX/2, TEST_APID_MAX};
+    CFE_MSG_ApId_t    input[] = {0, TEST_APID_MAX / 2, TEST_APID_MAX};
     CFE_MSG_ApId_t    actual  = TEST_APID_MAX;
     int               i;
 
@@ -336,8 +336,8 @@ void Test_MSG_ApId(void)
 void Test_MSG_SegmentationFlag(void)
 {
     CFE_MSG_Message_t          msg;
-    CFE_MSG_SegmentationFlag_t input[] = {CFE_MSG_SegFlag_Continue, CFE_MSG_SegFlag_First,
-                                          CFE_MSG_SegFlag_Last, CFE_MSG_SegFlag_Unsegmented};
+    CFE_MSG_SegmentationFlag_t input[] = {CFE_MSG_SegFlag_Continue, CFE_MSG_SegFlag_First, CFE_MSG_SegFlag_Last,
+                                          CFE_MSG_SegFlag_Unsegmented};
     CFE_MSG_SegmentationFlag_t actual  = CFE_MSG_SegFlag_Invalid;
     int                        i;
 
@@ -397,7 +397,7 @@ void Test_MSG_SegmentationFlag(void)
 void Test_MSG_SequenceCount(void)
 {
     CFE_MSG_Message_t msg;
-    CFE_MSG_ApId_t    input[] = {0, TEST_SEQUENCE_MAX/2, TEST_SEQUENCE_MAX};
+    CFE_MSG_ApId_t    input[] = {0, TEST_SEQUENCE_MAX / 2, TEST_SEQUENCE_MAX};
     CFE_MSG_ApId_t    actual  = TEST_SEQUENCE_MAX;
     int               i;
 

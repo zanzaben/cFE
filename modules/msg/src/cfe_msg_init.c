@@ -48,7 +48,7 @@ int32 CFE_MSG_Init(CFE_MSG_Message_t *MsgPtr, CFE_SB_MsgId_t MsgId, CFE_MSG_Size
 
     /* Set values input */
     status = CFE_MSG_SetMsgId(MsgPtr, MsgId);
-    if (status == CFE_SUCCESS) 
+    if (status == CFE_SUCCESS)
     {
         status = CFE_MSG_SetSize(MsgPtr, Size);
     }

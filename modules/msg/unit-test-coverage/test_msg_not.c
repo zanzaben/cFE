@@ -91,7 +91,7 @@ unsigned int Test_MSG_NotZero(const CFE_MSG_Message_t *MsgPtr)
         bits |= MSG_QOS_FLAG;
 
     /* Secondary */
-    CFE_MSG_GetFcnCode(MsgPtr, &fcncode);  // TODO check status
+    CFE_MSG_GetFcnCode(MsgPtr, &fcncode); // TODO check status
     if (fcncode != 0)
         bits |= MSG_FCNCODE_FLAG;
     CFE_MSG_GetSource(MsgPtr, &source);
@@ -164,7 +164,7 @@ unsigned int Test_MSG_NotF(const CFE_MSG_Message_t *MsgPtr)
         bits |= MSG_QOS_FLAG;
 
     /* Secondary */
-    CFE_MSG_GetFcnCode(MsgPtr, &fcncode);  // TODO check status
+    CFE_MSG_GetFcnCode(MsgPtr, &fcncode); // TODO check status
     if (fcncode != 0xFF)
         bits |= MSG_FCNCODE_FLAG;
     CFE_MSG_GetSource(MsgPtr, &source);

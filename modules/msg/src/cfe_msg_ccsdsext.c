@@ -27,11 +27,11 @@
 #include "cfe_error.h"
 
 /* CCSDS Extended definitions */
-#define CFE_MSG_EDSVER_SHIFT   11     /**< \brief CCSDS EDS version shift */
-#define CFE_MSG_EDSVER_MASK    0xF800 /**< \brief CCSDS EDS version mask */
-#define CFE_MSG_ENDIAN_MASK    0x0400 /**< \brief CCSDS endiam mask, little endian when set */
-#define CFE_MSG_PLAYBACK_MASK  0x0200 /**< \brief CCSDS playback flag, playback when set */
-#define CFE_MSG_SUBSYS_MASK    0x01FF /**< \brief CCSDS Subsystem mask */
+#define CFE_MSG_EDSVER_SHIFT  11     /**< \brief CCSDS EDS version shift */
+#define CFE_MSG_EDSVER_MASK   0xF800 /**< \brief CCSDS EDS version mask */
+#define CFE_MSG_ENDIAN_MASK   0x0400 /**< \brief CCSDS endiam mask, little endian when set */
+#define CFE_MSG_PLAYBACK_MASK 0x0200 /**< \brief CCSDS playback flag, playback when set */
+#define CFE_MSG_SUBSYS_MASK   0x01FF /**< \brief CCSDS Subsystem mask */
 
 /******************************************************************************
  * CCSDS extended header initialization - See header file for details

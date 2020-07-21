@@ -37,8 +37,8 @@
 void Test_MSG_GetTypeFromMsgId(void)
 {
     CFE_MSG_Message_t msg;
-    CFE_SB_MsgId_t    msgid = CFE_SB_ValueToMsgId(0);
-    CFE_MSG_Type_t    actual  = CFE_MSG_Type_Invalid;
+    CFE_SB_MsgId_t    msgid  = CFE_SB_ValueToMsgId(0);
+    CFE_MSG_Type_t    actual = CFE_MSG_Type_Invalid;
 
     UT_Text("Bad parameter tests, Null pointer");
     memset(&msg, 0, sizeof(msg));

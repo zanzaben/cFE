@@ -41,17 +41,17 @@
 /* TODO eventually these go away w/ single framework implementation */
 /* CCSDS_TIME_SIZE is specific to the selected CFE_SB time format */
 #if (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_16_SUBS)
-  /* 32 bits seconds + 16 bits subseconds */
-  #define CCSDS_TIME_SIZE 6
+/* 32 bits seconds + 16 bits subseconds */
+#define CCSDS_TIME_SIZE 6
 #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_SUBS)
-  /* 32 bits seconds + 32 bits subseconds */
-  #define CCSDS_TIME_SIZE 8
+/* 32 bits seconds + 32 bits subseconds */
+#define CCSDS_TIME_SIZE 8
 #elif (CFE_MISSION_SB_PACKET_TIME_FORMAT == CFE_MISSION_SB_TIME_32_32_M_20)
-  /* 32 bits seconds + 20 bits microsecs + 12 bits reserved */
-  #define CCSDS_TIME_SIZE 8
+/* 32 bits seconds + 20 bits microsecs + 12 bits reserved */
+#define CCSDS_TIME_SIZE 8
 #else
-  /* unknown format */
-  #error unable to define CCSDS_TIME_SIZE!
+/* unknown format */
+#error unable to define CCSDS_TIME_SIZE!
 #endif
 
 /*
@@ -68,24 +68,26 @@
 /**
  * \brief cFS command secondary header
  */
-typedef struct {
+typedef struct
+{
 
-   uint8 FunctionCode; /**< \brief Command Function Code */
-                       /* bits shift ---------description-------- */
-                       /* 0x7F  0    Command function code        */
-                       /* 0x80  7    Reserved                     */
+    uint8 FunctionCode; /**< \brief Command Function Code */
+                        /* bits shift ---------description-------- */
+                        /* 0x7F  0    Command function code        */
+                        /* 0x80  7    Reserved                     */
 
-   uint8 Checksum;     /**< \brief Command checksum  (all bits, 0xFF)      */
+    uint8 Checksum; /**< \brief Command checksum  (all bits, 0xFF)      */
 
 } CFE_MSG_CommandSecondaryHeader_t;
 
 /**
  * \brief cFS telemetry secondary header
  */
-typedef struct {
+typedef struct
+{
 
-   uint8  Time[CCSDS_TIME_SIZE]; /**< \brief Time sized for selected format */
+    uint8 Time[CCSDS_TIME_SIZE]; /**< \brief Time sized for selected format */
 
 } CFE_MSG_TelemetrySecondaryHeader_t;
 
-#endif  /* _cfe_msg_sechdr_ */
+#endif /* _cfe_msg_sechdr_ */
