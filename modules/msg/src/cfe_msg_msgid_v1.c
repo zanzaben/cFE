@@ -24,6 +24,7 @@
 #include "cfe_msg_api.h"
 #include "cfe_msg_priv.h"
 #include "cfe_error.h"
+#include "cfe_platform_cfg.h"
 
 /******************************************************************************
  * Get message id - See API and header file for details
