@@ -85,11 +85,11 @@ uint16 CFE_SB_MsgHdrSize(const CFE_SB_Msg_t *MsgPtr)
     }
     else if(type == CFE_MSG_Type_Cmd)
     {
-        size = sizeof(CFE_MSG_CommandHeader_t);
+        size = sizeof(CFE_SB_CmdHdr_t);
     }
     else if(type == CFE_MSG_Type_Tlm)
     {
-        size = sizeof(CFE_MSG_TelemetryHeader_t);
+        size = sizeof(CFE_SB_TlmHdr_t);
     }
 
     return size;

@@ -146,10 +146,20 @@
 ** Type Definitions
 */
 
-/* Old SB scope typedefs will eventually be deprecated, but high impact */
-typedef CFE_MSG_Message_t         CFE_SB_Msg_t;      /**< \brief Old scope typedefs, old member names might not match */
-typedef CFE_MSG_CommandHeader_t   CFE_SB_CmdHdr_t;   /**< \brief Old scope typedefs, old member names might not match */
-typedef CFE_MSG_TelemetryHeader_t CFE_SB_TlmHdr_t;   /**< \brief Old scope typedefs, old member names might not match */
+/** \brief Software Bus generic message */
+typedef CFE_MSG_Message_t CFE_SB_Msg_t;
+
+/** \brief Aligned Software Bus command header */
+typedef union {
+    CFE_MSG_CommandHeader_t Cmd;
+    CFE_SB_Msg_t            BaseMsg;
+} CFE_SB_CmdHdr_t;
+
+/** \brief Aligned Software Bus telemetry header */
+typedef union {
+    CFE_MSG_TelemetryHeader_t Tlm;
+    CFE_SB_Msg_t              BaseMsg;
+} CFE_SB_TlmHdr_t;
 
 #define CFE_SB_CMD_HDR_SIZE     (sizeof(CFE_SB_CmdHdr_t))/**< \brief Size of #CFE_SB_CmdHdr_t in bytes */
 #define CFE_SB_TLM_HDR_SIZE     (sizeof(CFE_SB_TlmHdr_t))/**< \brief Size of #CFE_SB_TlmHdr_t in bytes */

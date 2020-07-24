@@ -83,7 +83,7 @@ typedef struct
 typedef union
 {
     CCSDS_SpacePacket_t CCSDS;                             /**< \brief CCSDS Header (Pri or Pri + Ext) */
-    uint64              LongLong;                          /**< \brief Force 64-bit alignment */
+    uint32              Align;                             /**< \brief Force 32-bit alignment */
     uint8               Byte[sizeof(CCSDS_SpacePacket_t)]; /**< \brief Byte level access */
 } CFE_MSG_Message_t;
 

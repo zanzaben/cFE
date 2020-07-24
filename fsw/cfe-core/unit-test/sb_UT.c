@@ -2546,7 +2546,7 @@ void Test_Unsubscribe_GetDestPtr(void)
 void Test_SendMsg_API(void)
 {
     SB_UT_ADD_SUBTEST(Test_SendMsg_NullPtr);
-    SB_UT_ADD_SUBTEST(Test_SendMsg_InvalidMsgId);
+/*    SB_UT_ADD_SUBTEST(Test_SendMsg_InvalidMsgId); - can't set invalid msgid, TODO remove */
     SB_UT_ADD_SUBTEST(Test_SendMsg_NoSubscribers);
     SB_UT_ADD_SUBTEST(Test_SendMsg_MaxMsgSizePlusOne);
     SB_UT_ADD_SUBTEST(Test_SendMsg_BasicSend);
@@ -2561,7 +2561,7 @@ void Test_SendMsg_API(void)
     SB_UT_ADD_SUBTEST(Test_SendMsg_ZeroCopyReleasePtr);
     SB_UT_ADD_SUBTEST(Test_SendMsg_DisabledDestination);
     SB_UT_ADD_SUBTEST(Test_SendMsg_SendWithMetadata);
-    SB_UT_ADD_SUBTEST(Test_SendMsg_InvalidMsgId_ZeroCopy);
+ /*   SB_UT_ADD_SUBTEST(Test_SendMsg_InvalidMsgId_ZeroCopy); - can't set invalid msgid, TODO remove */
     SB_UT_ADD_SUBTEST(Test_SendMsg_MaxMsgSizePlusOne_ZeroCopy);
     SB_UT_ADD_SUBTEST(Test_SendMsg_NoSubscribers_ZeroCopy);
 } /* end Test_SendMsg_API */
@@ -2582,6 +2582,7 @@ void Test_SendMsg_NullPtr(void)
 /*
 ** Test response to sending a message with an invalid ID
 */
+/* TODO remove, this test is no longer valid since you can't set an invalid MSGID */
 void Test_SendMsg_InvalidMsgId(void)
 {
     SB_UT_Test_Tlm_t TlmPkt;
@@ -3693,11 +3694,11 @@ void Test_CFE_SB_GetUserData_CmdNoSecHdr(void)
     CFE_MSG_SetHasSecondaryHeader(SBNoSecHdrPktPtr, false);
 
     ActualAdrReturned = CFE_SB_GetUserData(SBNoSecHdrPktPtr);
-    ExpAdrReturned = (uint8 *) SBNoSecHdrPktPtr + 6;
+    ExpAdrReturned = (uint8 *) SBNoSecHdrPktPtr + sizeof(CCSDS_SpacePacket_t);
 
     UtAssert_True(ActualAdrReturned == ExpAdrReturned,
             "Address of data for commands without secondary header is "
-              "packet address + 6\n PktAddr %p, Rtn %p, Exp %p",
+              "packet address + CCSDS header(s)\n PktAddr %p, Rtn %p, Exp %p",
             (void *) SBNoSecHdrPktPtr, ActualAdrReturned, ExpAdrReturned);
 
 } /* end Test_CFE_SB_GetUserData */
@@ -3848,7 +3849,8 @@ void Test_CFE_SB_SetGetUserDataLength_Cmd(void)
     /* Init cmd pkt w/ sec hdr */
     CFE_SB_InitMsg(SBCmdPtr, SB_UT_CMD_MID, sizeof(SB_UT_Test_Cmd_t), true);
 
-    Util_CFE_SB_SetGetUserDataLength(SBCmdPtr, sizeof(CFE_MSG_CommandSecondaryHeader_t));
+    /* Calculation for secondary header accounts for possible padding */
+    Util_CFE_SB_SetGetUserDataLength(SBCmdPtr, sizeof(CFE_SB_CmdHdr_t) - sizeof(CCSDS_PrimaryHeader_t));
 
 } /* end Test_CFE_SB_SetGetUserDataLength */
 
@@ -3861,7 +3863,7 @@ void Test_CFE_SB_SetGetUserDataLength_CmdNoSecHdr(void)
     CFE_SB_InitMsg(SBNoSecHdrPktPtr, SB_UT_CMD_MID, sizeof(SBNoSecHdrPkt), true);
     CFE_MSG_SetHasSecondaryHeader(SBNoSecHdrPktPtr, false);
 
-    Util_CFE_SB_SetGetUserDataLength(SBNoSecHdrPktPtr, 0);
+    Util_CFE_SB_SetGetUserDataLength(SBNoSecHdrPktPtr, sizeof(CCSDS_SpacePacket_t) - sizeof(CCSDS_PrimaryHeader_t));
 
 } /* end Test_CFE_SB_SetGetUserDataLength */
 
@@ -3873,7 +3875,8 @@ void Test_CFE_SB_SetGetUserDataLength_Tlm(void)
     /* Init tlm pkts w/ sec hdr */
     CFE_SB_InitMsg(SBTlmPtr, SB_UT_TLM_MID, sizeof(SB_UT_Test_Tlm_t), true);
 
-    Util_CFE_SB_SetGetUserDataLength(SBTlmPtr, sizeof(CFE_MSG_TelemetrySecondaryHeader_t));
+    /* Calculation for secondary header accounts for possible padding */
+    Util_CFE_SB_SetGetUserDataLength(SBTlmPtr, sizeof(CFE_SB_TlmHdr_t) - sizeof(CCSDS_PrimaryHeader_t));
 
 } /* end Test_CFE_SB_SetGetUserDataLength */
 
@@ -3886,7 +3889,7 @@ void Test_CFE_SB_SetGetUserDataLength_TlmNoSecHdr(void)
     CFE_SB_InitMsg(SBNoSecHdrPktPtr, SB_UT_TLM_MID, sizeof(SBNoSecHdrPkt), true);
     CFE_MSG_SetHasSecondaryHeader(SBNoSecHdrPktPtr, false);
 
-    Util_CFE_SB_SetGetUserDataLength(SBNoSecHdrPktPtr, 0);
+    Util_CFE_SB_SetGetUserDataLength(SBNoSecHdrPktPtr, sizeof(CCSDS_SpacePacket_t) - sizeof(CCSDS_PrimaryHeader_t));
 
 } /* end Test_CFE_SB_SetGetUserDataLength */
 
@@ -4173,7 +4176,7 @@ void Test_CFE_SB_ChecksumUtils_Cmd(void)
 #ifndef MESSAGE_FORMAT_IS_CCSDS_VER_2
     ExpRtnFrmGet = 0x2f;
 #else
-    ExpRtnFrmGet = 0x65;
+    ExpRtnFrmGet = 0x5D;
 #endif
     ASSERT_EQ(CFE_SB_GetChecksum(SBCmdPtr), ExpRtnFrmGet);
 
