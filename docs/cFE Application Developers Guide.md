@@ -429,9 +429,6 @@ deciding on whether to create multiple Applications versus a single
 Application with multiple Tasks, the Application Developer should keep
 in mind these facts:
 
--   Child Tasks can only execute at a priority equal to or less than the
-    priority of the Application's Main Task.
-
 -   If the Main Task of an Application is stopped, either through
     detection of an exception or via command, all Child Tasks are also
     stopped.
