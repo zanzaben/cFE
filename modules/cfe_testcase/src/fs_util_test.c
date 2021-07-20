@@ -33,29 +33,83 @@
 
 #include "cfe_test.h"
 
-void TestCalculateCRC2(void)
+void TestFileCategory(void)
 {
-    const char *Data = "Random Stuff";
-    uint8       Data2[12];
-    uint32      expectedCrc      = 20824;
-    uint32      inputCrc         = 345353;
-    uint32      expectedBlockCrc = 2688;
+    UtPrintf("Testing: CFE_FS_GetDefaultMountPoint, CFE_FS_GetDefaultExtension");
 
-    UtPrintf("Testing: CFE_ES_CalculateCRC");
+    UtAssert_NULL(CFE_FS_GetDefaultMountPoint(CFE_FS_FileCategory_UNKNOWN));
+    UtAssert_NULL(CFE_FS_GetDefaultExtension(CFE_FS_FileCategory_UNKNOWN));
+}
 
-    UtAssert_UINT32_EQ(CFE_ES_CalculateCRC(Data, sizeof(Data), 0, CFE_MISSION_ES_DEFAULT_CRC), expectedCrc);
+void TestInputFile(void)
+{
+    char       NameBuf[OS_MAX_PATH_LEN];
+    char       OutNameBuf[OS_MAX_PATH_LEN];
+    const char Name[]         = "FileName";
+    char       InNameBuf[]    = "BufferName";
+    const char Path[]         = "/func";
+    const char Ext[]          = ".test";
+    const char ExpectedName[] = "/func/FileName.test";
+    const char ExpectedBuf[]  = "/func/BufferName.test";
 
-    memset(Data2, 1, sizeof(Data2));
-    UtAssert_UINT32_EQ(CFE_ES_CalculateCRC(&Data2, sizeof(Data2), inputCrc, CFE_MISSION_ES_CRC_16), expectedBlockCrc);
+    UtPrintf("Testing: CFE_FS_ParseInputFileName, CFE_FS_ParseInputFileNameEX");
 
-    UtAssert_UINT32_EQ(CFE_ES_CalculateCRC(Data, sizeof(Data), 0, CFE_MISSION_ES_CRC_8), 0);
-    UtAssert_UINT32_EQ(CFE_ES_CalculateCRC(Data, sizeof(Data), 0, CFE_MISSION_ES_CRC_32), 0);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileName(NameBuf, Name, sizeof(NameBuf), CFE_FS_FileCategory_SCRIPT),
+                      CFE_SUCCESS);
+    UtAssert_NOT_NULL(strstr(NameBuf, Name));
 
-    UtAssert_UINT32_EQ(CFE_ES_CalculateCRC(NULL, sizeof(Data), expectedCrc, CFE_MISSION_ES_CRC_16), expectedCrc);
-    UtAssert_UINT32_EQ(CFE_ES_CalculateCRC(Data, 0, expectedBlockCrc, CFE_MISSION_ES_CRC_16), expectedBlockCrc);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileName(NULL, Name, sizeof(NameBuf), CFE_FS_FileCategory_SCRIPT),
+                      CFE_FS_BAD_ARGUMENT);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileName(NameBuf, NULL, sizeof(NameBuf), CFE_FS_FileCategory_SCRIPT),
+                      CFE_FS_INVALID_PATH);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileName(NameBuf, Name, 0, CFE_FS_FileCategory_SCRIPT), CFE_FS_BAD_ARGUMENT);
+
+    UtAssert_INT32_EQ(
+        CFE_FS_ParseInputFileNameEx(OutNameBuf, InNameBuf, sizeof(OutNameBuf), sizeof(InNameBuf), Name, Path, Ext),
+        CFE_SUCCESS);
+    UtAssert_StrCmp(ExpectedBuf, OutNameBuf, "Parse Input EX: %s", OutNameBuf);
+    UtAssert_INT32_EQ(
+        CFE_FS_ParseInputFileNameEx(OutNameBuf, NULL, sizeof(OutNameBuf), sizeof(InNameBuf), Name, Path, Ext),
+        CFE_SUCCESS);
+    UtAssert_StrCmp(ExpectedName, OutNameBuf, "Parse Input EX: %s", OutNameBuf);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileNameEx(OutNameBuf, InNameBuf, sizeof(OutNameBuf), 0, Name, Path, Ext),
+                      CFE_SUCCESS);
+    UtAssert_StrCmp(ExpectedName, OutNameBuf, "Parse Input EX: %s", OutNameBuf);
+    UtAssert_INT32_EQ(
+        CFE_FS_ParseInputFileNameEx(OutNameBuf, InNameBuf, sizeof(OutNameBuf), sizeof(InNameBuf), NULL, Path, Ext),
+        CFE_SUCCESS);
+    UtAssert_StrCmp(ExpectedBuf, OutNameBuf, "Parse Input EX: %s", OutNameBuf);
+
+    UtAssert_INT32_EQ(
+        CFE_FS_ParseInputFileNameEx(NULL, InNameBuf, sizeof(OutNameBuf), sizeof(InNameBuf), Name, Path, Ext),
+        CFE_FS_BAD_ARGUMENT);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileNameEx(OutNameBuf, InNameBuf, 0, sizeof(InNameBuf), Name, Path, Ext),
+                      CFE_FS_BAD_ARGUMENT);
+    UtAssert_INT32_EQ(
+        CFE_FS_ParseInputFileNameEx(OutNameBuf, NULL, sizeof(OutNameBuf), sizeof(InNameBuf), NULL, Path, Ext),
+        CFE_FS_INVALID_PATH);
+    UtAssert_INT32_EQ(CFE_FS_ParseInputFileNameEx(OutNameBuf, InNameBuf, sizeof(OutNameBuf), 0, NULL, Path, Ext),
+                      CFE_FS_INVALID_PATH);
+}
+
+void TestFileName(void)
+{
+    const char Path[] = "/func/FileName.test";
+    char       Name[OS_MAX_FILE_NAME];
+    const char ExpectedName[] = "FileName.test";
+
+    UtPrintf("Testing: CFE_FS_ExtractFilenameFromPath");
+
+    UtAssert_INT32_EQ(CFE_FS_ExtractFilenameFromPath(Path, Name), CFE_SUCCESS);
+    UtAssert_StrCmp(Name, ExpectedName, "Extract Filename: %s", Name);
+
+    UtAssert_INT32_EQ(CFE_FS_ExtractFilenameFromPath(NULL, Name), CFE_FS_BAD_ARGUMENT);
+    UtAssert_INT32_EQ(CFE_FS_ExtractFilenameFromPath(Path, NULL), CFE_FS_BAD_ARGUMENT);
 }
 
 void FSUtilTestSetup(void)
 {
-    UtTest_Add(TestCalculateCRC2, NULL, NULL, "Test Calculate CRC");
+    UtTest_Add(TestFileCategory, NULL, NULL, "Test File Category");
+    UtTest_Add(TestInputFile, NULL, NULL, "Test Input File");
+    UtTest_Add(TestFileName, NULL, NULL, "Test File Name");
 }
