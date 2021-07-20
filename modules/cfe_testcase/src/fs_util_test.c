@@ -122,11 +122,11 @@ void FS_OnEvent(void *Meta, CFE_FS_FileWriteEvent_t Event, int32 Status, uint32 
 void TestFileDump(void)
 {
     CFE_FS_FileWriteMetaData_t State;
-    //CFE_FS_FileWriteGetData_t  Data;
-    //CFE_FS_FileWriteOnEvent_t  Event;
+    // CFE_FS_FileWriteGetData_t  Data;
+    // CFE_FS_FileWriteOnEvent_t  Event;
     memset(&State, 0, sizeof(State));
-    //memset(&Data, 1, 1);
-    //memset(&Event, 1, 1);
+    // memset(&Data, 1, 1);
+    // memset(&Event, 1, 1);
 
     State.FileSubType = 2;
     State.GetData     = FS_DataGetter;
