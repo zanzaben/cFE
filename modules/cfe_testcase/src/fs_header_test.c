@@ -54,7 +54,7 @@ void TestCreateHeader(void)
 
     UtPrintf("Testing: CFE_FS_InitHeader, CFE_FS_WriteHeader");
 
-    cFE_FTAssert_VOIDCALL(CFE_FS_InitHeader(&Header, TestDescription, CFE_FS_SubType_ES_ERLOG));
+    // cFE_FTAssert_VOIDCALL(CFE_FS_InitHeader(&Header, TestDescription, CFE_FS_SubType_ES_ERLOG));
     UtAssert_INT32_EQ(CFE_FS_WriteHeader(fd, &Header), sizeof(CFE_FS_Header_t));
 
     UtAssert_INT32_EQ(CFE_FS_WriteHeader(fd, NULL), CFE_FS_BAD_ARGUMENT);
@@ -77,7 +77,7 @@ void TestReadHeader(void)
 
     UtPrintf("Testing: CFE_FS_ReadHeader");
 
-    cFE_FTAssert_VOIDCALL(CFE_FS_InitHeader(&Header, TestDescription, CFE_FS_SubType_ES_ERLOG));
+    // cFE_FTAssert_VOIDCALL(CFE_FS_InitHeader(&Header, TestDescription, CFE_FS_SubType_ES_ERLOG));
     UtAssert_INT32_EQ(CFE_FS_WriteHeader(fd, &Header), sizeof(CFE_FS_Header_t));
     UtAssert_INT32_EQ(CFE_FS_ReadHeader(&ReadHeader, fd), sizeof(CFE_FS_Header_t));
 
@@ -94,15 +94,15 @@ void TestReadHeader(void)
 
 void TestTimeStamp(void)
 {
-    CFE_FS_Header_t    Header;
-    CFE_FS_Header_t    ReadHeader;
-    const char *       TestDescription = "TEST_HEADER";
-    CFE_TIME_SysTime_t NewTimestamp    = {0xFFFFFFFF, 0xFFFFFFFF};
-    osal_id_t          fd              = setup_file();
+    CFE_FS_Header_t Header;
+    CFE_FS_Header_t ReadHeader;
+    // const char *       TestDescription = "TEST_HEADER";
+    CFE_TIME_SysTime_t NewTimestamp = {0xFFFFFFFF, 0xFFFFFFFF};
+    osal_id_t          fd           = setup_file();
 
     UtPrintf("Testing: CFE_FS_SetTimestamp");
 
-    cFE_FTAssert_VOIDCALL(CFE_FS_InitHeader(&Header, TestDescription, CFE_FS_SubType_ES_ERLOG));
+    // cFE_FTAssert_VOIDCALL(CFE_FS_InitHeader(&Header, TestDescription, CFE_FS_SubType_ES_ERLOG));
     UtAssert_INT32_EQ(CFE_FS_WriteHeader(fd, &Header), sizeof(CFE_FS_Header_t));
     UtAssert_INT32_EQ(CFE_FS_SetTimestamp(fd, NewTimestamp), CFE_SUCCESS);
     UtAssert_INT32_EQ(CFE_FS_ReadHeader(&ReadHeader, fd), sizeof(CFE_FS_Header_t));
