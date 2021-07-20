@@ -107,9 +107,30 @@ void TestFileName(void)
     UtAssert_INT32_EQ(CFE_FS_ExtractFilenameFromPath(Path, NULL), CFE_FS_BAD_ARGUMENT);
 }
 
+void TestFileDump(void)
+{
+    CFE_FS_FileWriteMetaData_t State;
+    memset(&State, 0, sizeof(State));
+    State.FileSubType = 2;
+    strncpy(State.FileName, "/ram/FT.bin", sizeof(State.FileName));
+    strncpy(State.Description, "FT", sizeof(State.Description));
+
+    UtPrintf("Testing: CFE_FS_BackgroundFileDumpRequest, CFE_FS_BackgroundFileDumpIsPending");
+
+    UtAssert_INT32_EQ(CFE_FS_BackgroundFileDumpIsPending(&State), false);
+    // UtAssert_INT32_EQ(CFE_FS_BackgroundFileDumpRequest(&State), CFE_SUCCESS);
+
+    State.IsPending = true;
+    UtAssert_INT32_EQ(CFE_FS_BackgroundFileDumpIsPending(&State), true);
+
+    UtAssert_INT32_EQ(CFE_FS_BackgroundFileDumpRequest(NULL), CFE_FS_BAD_ARGUMENT);
+    UtAssert_INT32_EQ(CFE_FS_BackgroundFileDumpIsPending(NULL), false);
+}
+
 void FSUtilTestSetup(void)
 {
     UtTest_Add(TestFileCategory, NULL, NULL, "Test File Category");
     UtTest_Add(TestInputFile, NULL, NULL, "Test Input File");
     UtTest_Add(TestFileName, NULL, NULL, "Test File Name");
+    UtTest_Add(TestFileDump, NULL, NULL, "Test File Dump");
 }
